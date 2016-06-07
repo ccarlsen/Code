@@ -1,0 +1,8 @@
+.custom-cursor {
+  width: 1px;
+  height: 13px;
+  position: absolute;
+  background: red;
+  z-index: 4;
+  transform: translate(4px, 4px);
+}
