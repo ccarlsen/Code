@@ -13,15 +13,15 @@ var onError = function (err) {
 };
 
 gulp.task('sass', function() {
-	gulp.src('assets/scss/style.scss')
+	gulp.src('public/assets/scss/style.scss')
 	.pipe(plumber(onError))
 	.pipe(sass())
 	.pipe(minifyCss({
 		keepSpecialComments: 0
 	}))
-	.pipe(gulp.dest('assets/css/'))
+	.pipe(gulp.dest('public/assets/css/'))
 });
 
 gulp.task('watch', function() {
-	gulp.watch('assets/scss/**/*.scss', ['sass']);
+	gulp.watch('public/assets/scss/**/*.scss', ['sass']);
 });
