@@ -1,22 +1,18 @@
 {
-  "name": "puhn.co",
+  "name": "Code",
   "version": "1.0.0",
-  "description": "Collaborativ Code Editor",
   "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ccarlsen/puhn.co.git"
-  },
-  "author": "madetho, ccarlsen",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/ccarlsen/puhn.co/issues"
-  },
-  "homepage": "https://github.com/ccarlsen/puhn.co#readme",
   "dependencies": {
     "express": "*",
     "letsencrypt-express": "^1.1.5",
     "socket.io": "*",
     "spdy": "^3.3.3"
+  }
+  "devDependencies": {
+    "gulp-minify-css": "^0.3.13",
+    "gulp-plumber": "^1.1.0",
+    "gulp-sass": "^2.1.0",
+    "gulp-util": "^3.0.1",
+    "gulp": "^3.8.10"
   }
 }

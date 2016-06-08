@@ -23,26 +23,28 @@ $(document).ready(function() {
 	
 });
 
-editor.setOption("extraKeys", {
-  Tab: function(cm) {
-    var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
-    cm.replaceSelection(spaces);
-  }
+editor.setOption('extraKeys', {
+	Tab: function(cm) {
+		var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
+		cm.replaceSelection(spaces);
+	}
 });
 
 editor.on('change', function(editor, data) {
 	if(data.origin != 'change' && data.origin != 'setValue') {
-		  var char = data.from.ch;
-		  var line = data.from.line;
-		  var key = data.text;
-		  var cursor = editor.getCursor();
-		  socket.emit('change', data);
+		var char = data.from.ch;
+		var line = data.from.line;
+		var key = data.text;
+		var cursor = editor.getCursor();
+		socket.emit('change', data);
 	}
 });
 
 editor.on('cursorActivity', function(editor) {
 	var cursor = editor.getCursor();
+	var selection = editor.getSelections();
 	socket.emit('cursor-activty-client', cursor);
+	console.log(selection);
 });
 
 socket.on('client-joined', function(client) {
@@ -59,7 +61,6 @@ socket.on('cursor-activty', function(cursor) {
 	var lineWidth = $('.CodeMirror-line span')[0].getBoundingClientRect().width;
 	var lineHeight = $('.CodeMirror-line').height();
 	var charAmount = doc.getLine(0).length;
-	console.log('width: ' + lineWidth + ' height: ' + lineHeight + ' space: ' + space);
 	$('.custom-cursor[data-client='+clientid+']').css({
 		"top": (cursor.line*lineHeight),
 		"left": (((cursor.ch)*space))
@@ -78,5 +79,4 @@ socket.on("client-left", function(clientId){
 function setWidthSpace() {
 	editor.setValue(" ");
 	space = $('.CodeMirror-line span')[0].getBoundingClientRect().width;
-	console.log('space: ' + space);
 }
