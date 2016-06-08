@@ -17,11 +17,9 @@ $(document).ready(function() {
 			if(mySocketId != clientid) {
 				console.log(clientid);
 				$('.CodeMirror-sizer').append('<div data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
-				$('.CodeMirror-sizer').append('<div data-client="'+clientid+'" class="custom-selection"><div class="custom-selected" style="width:100px;top:0px;left:0px;"></div><div class="custom-selected" style="width:200px;top:38px;left:0px;"></div></div>');
 			}
 		});
 	});
-	
 });
 
 editor.setOption('extraKeys', {
@@ -39,13 +37,15 @@ editor.on('change', function(editor, data) {
 		var cursor = editor.getCursor();
 		socket.emit('change', data);
 	}
+	doc.markText({line: 0, ch: 0}, {line: 3, ch: 0}, {
+		className: 'derp',
+	});
 });
 
 editor.on('cursorActivity', function(editor) {
 	var cursor = editor.getCursor();
 	var selection = editor.getSelections();
 	socket.emit('cursor-activty-client', cursor);
-	console.log(selection);
 });
 
 socket.on('client-joined', function(client) {
