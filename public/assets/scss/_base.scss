@@ -34,3 +34,13 @@ body {
 	transform: translate(4px, 4px);
 	animation: blink 1.06s steps(1) infinite;
 }
+
+.custom-selection {
+	.custom-selected {
+		height: 19px;
+		background: rgba(red, 0.1);
+		position: absolute;
+		transform: translate(4px, 4px);
+		z-index: 1;
+	}
+}

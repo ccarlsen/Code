@@ -17,6 +17,7 @@ $(document).ready(function() {
 			if(mySocketId != clientid) {
 				console.log(clientid);
 				$('.CodeMirror-sizer').append('<div data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
+				$('.CodeMirror-sizer').append('<div data-client="'+clientid+'" class="custom-selection"><div class="custom-selected" style="width:100px;top:0px;left:0px;"></div><div class="custom-selected" style="width:200px;top:38px;left:0px;"></div></div>');
 			}
 		});
 	});
