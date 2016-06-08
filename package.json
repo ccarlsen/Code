@@ -7,7 +7,7 @@
     "letsencrypt-express": "^1.1.5",
     "socket.io": "*",
     "spdy": "^3.3.3"
-  }
+  },
   "devDependencies": {
     "gulp-minify-css": "^0.3.13",
     "gulp-plumber": "^1.1.0",
