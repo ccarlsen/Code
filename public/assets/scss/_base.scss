@@ -25,7 +25,15 @@ body {
 	border-left: 2px solid blue;
 }
 
-.derp {
+.CodeMirror-selected {
+	background: rgba(blue, 0.2);
+}
+
+.CodeMirror-focused .CodeMirror-selected {
+	background: rgba(blue, 0.2);
+}
+
+.custom-selection {
 	position: relative;
 	&:before {
 		content: "";
