@@ -65,6 +65,16 @@ io.on('connection', function(socket){
 		socket.broadcast.to(socket.room).emit('cursor-activty', cursor);
 	});
 
+  socket.on('client-selection', function (selection) {
+		selection.socketid = socket.id;
+		console.log(selection);
+		socket.broadcast.to(socket.room).emit('client-selection-receive', selection);
+	});
+
+  socket.on('client-selection-clear', function () {
+		socket.broadcast.to(socket.room).emit('client-selection-clear-receive', socket.id);
+	});
+
 	socket.on('disconnect', function() {
       console.log('Room: ' + socket.room + ' id: ' + socket.id + 'Got disconnect!');
       var i = socketlist.indexOf(socket);

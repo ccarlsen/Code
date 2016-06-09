@@ -7,8 +7,9 @@ var editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
 });
 var doc = editor.getDoc();
 var space = 0;
+var selections = [];
 
-$(document).ready(function() { 
+$(document).ready(function() {
 	socket.emit('join', 'xyz', function(data, socketlist, socketid) {
 		setWidthSpace();
 		editor.setValue(data);
@@ -37,15 +38,36 @@ editor.on('change', function(editor, data) {
 		var cursor = editor.getCursor();
 		socket.emit('change', data);
 	}
-	doc.markText({line: 0, ch: 0}, {line: 3, ch: 0}, {
-		className: 'derp',
-	});
 });
 
 editor.on('cursorActivity', function(editor) {
 	var cursor = editor.getCursor();
 	var selection = editor.getSelections();
+	if(selection[0].length > 0){
+		socket.emit('client-selection', { from: editor.getCursor(true), to: editor.getCursor(false) });
+	} else {
+		console.log(selection[0].length + 'clear');
+		socket.emit('client-selection-clear');
+	}
 	socket.emit('cursor-activty-client', cursor);
+});
+
+socket.on('client-selection-receive', function(selection) {
+	var clientid = selection.socketid.replace('/#', '');
+	if(selections[clientid] !== undefined) {
+		selections[clientid].clear();
+	}
+	selections[clientid] = doc.markText({line: selection.from.line, ch: selection.from.ch}, {line: selection.to.line, ch: selection.to.ch}, {
+		className: 'derp',
+	});
+});
+
+socket.on('client-selection-clear-receive', function(clientId) {
+	clientId = clientId.replace('/#', '');
+	console.log(clientId);
+	if(selections[clientId] !== undefined) {
+		selections[clientId].clear();
+	}
 });
 
 socket.on('client-joined', function(client) {
