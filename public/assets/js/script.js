@@ -63,6 +63,13 @@ editorHTML.on('change', function(editor, data) {
 	}
 });
 
+editorHTML.on('paste', function(editor, data) {
+	var pastedText = data.clipboardData.getData('text');
+	var pastedText2 = pastedText.replace(/\t/g, '&nbsp;&nbsp;');
+	console.log(pastedText);
+	console.log(pastedText2);
+});
+
 editorHTML.on('cursorActivity', function(editor) {
 	var cursor = editor.getCursor();
 	var selection = editor.getSelections();
