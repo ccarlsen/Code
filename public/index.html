@@ -13,18 +13,18 @@
 <body>
 
 	<aside>
-		<ul>
-			<li class="active"><span class="user1"></span>HTML</li>
-			<li>CSS</li>
-			<li><span class="user2"></span><span class="user3"></span>JavaScript</li>
+		<ul id="tabs">
+			<li data-editor="HTML" class="active"><span class="user1"></span>HTML</li>
+			<li data-editor="SCSS">SCSS</li>
+			<li data-editor="JS"><span class="user2"></span><span class="user3"></span>JavaScript</li>
 		</ul>
-		<section style="display:block;">
+		<section id="sectionHTML" class="active">
 			<textarea id="editorHTML"></textarea>
 		</section>
-		<section>
-			<textarea id="editorCSS"></textarea>
+		<section id="sectionSCSS">
+			<textarea id="editorSCSS"></textarea>
 		</section>
-		<section>
+		<section id="sectionJS">
 			<textarea id="editorJS"></textarea>
 		</section>
 	</aside>

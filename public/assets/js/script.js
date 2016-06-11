@@ -4,19 +4,19 @@ var editorHTML = CodeMirror.fromTextArea(document.getElementById('editorHTML'), 
 	mode: "htmlmixed",
 	theme: "default",
 	lineNumbers: true,
-	lineWrapping: true
+	lineWrapping: false
 });
-var editorCSS = CodeMirror.fromTextArea(document.getElementById('editorCSS'), {
-	mode: "css",
+var editorSCSS = CodeMirror.fromTextArea(document.getElementById('editorSCSS'), {
+	mode: "text/x-scss",
 	theme: "default",
 	lineNumbers: true,
-	lineWrapping: true
+	lineWrapping: false
 });
 var editorJS = CodeMirror.fromTextArea(document.getElementById('editorJS'), {
 	mode: "javascript",
 	theme: "default",
 	lineNumbers: true,
-	lineWrapping: true
+	lineWrapping: false
 });
 var doc = editorHTML.getDoc();
 var space = 0;
@@ -35,6 +35,7 @@ $(document).ready(function() {
 	socket.emit('join', 'xyz', function(data, socketlist, socketid) {
 		setWidthSpace();
 		editorHTML.setValue(data);
+		$('#sectionHTML').addClass('active');
 		var mySocketId = socketid.replace('/#', '');
 		socketlist.forEach(function (clientid) {
 			if(mySocketId != clientid) {
@@ -133,4 +134,15 @@ socket.on('getValue', function(callback) {
 socket.on('client-left', function(clientId){
 	clientId = clientId.replace('/#', '');
 	$('.custom-cursor[data-client='+clientId+']').remove();
+});
+
+
+$('#tabs li').on('click', function() {
+	var editor = $(this).data('editor');
+	
+	$('#tabs li').removeClass('active');
+	$(this).addClass('active');
+
+	$('section').removeClass('active');
+	$('#section'+editor).addClass('active');
 });
