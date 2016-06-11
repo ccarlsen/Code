@@ -71,8 +71,8 @@ io.on('connection', function(socket){
 		socket.broadcast.to(socket.room).emit('client-selection-receive', selection);
 	});
 
-  socket.on('client-selection-clear', function () {
-		socket.broadcast.to(socket.room).emit('client-selection-clear-receive', socket.id);
+  socket.on('client-selection-clear', function (editor) {
+		socket.broadcast.to(socket.room).emit('client-selection-clear-receive', {socketid: socket.id, editor: editor});
 	});
 
 	socket.on('disconnect', function() {
