@@ -54,6 +54,20 @@ editorHTML.setOption('extraKeys', {
 });
 
 editorHTML.on('change', function(editor, data) {
+	if(data.origin == "paste") {
+		var lineFrom = data.from.line;
+	  var lineTo = data.from.line + data.text.length;
+
+	  function reindentLines(editor, lineFrom, lineTo) {
+	      editor.operation(function() {
+	          editor.eachLine(lineFrom, lineTo, function(lineHandle) {
+	              editor.indentLine(lineHandle.lineNo(), "smart");
+	          });
+	      });
+	  }
+	  reindentLines(editor, lineFrom, lineTo);
+	}
+
 	if(data.origin != 'change' && data.origin != 'setValue') {
 		var char = data.from.ch;
 		var line = data.from.line;
@@ -63,12 +77,6 @@ editorHTML.on('change', function(editor, data) {
 	}
 });
 
-editorHTML.on('paste', function(editor, data) {
-	var pastedText = data.clipboardData.getData('text');
-	var pastedText2 = pastedText.replace(/\t/g, '&nbsp;&nbsp;');
-	console.log(pastedText);
-	console.log(pastedText2);
-});
 
 editorHTML.on('cursorActivity', function(editor) {
 	var cursor = editor.getCursor();
