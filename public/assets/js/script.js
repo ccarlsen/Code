@@ -1,78 +1,117 @@
 // VARIABLES
 var socket = io.connect();
 var editors = [];
-editors['html'] = CodeMirror.fromTextArea(document.getElementById('editorHTML'), {
+editors['HTML'] = CodeMirror.fromTextArea(document.getElementById('editorHTML'), {
 	mode: "htmlmixed",
-	theme: "default",
 	lineNumbers: true,
-	lineWrapping: false
+	lineWrapping: false,
+	scrollbarStyle: "simple",
+	autoCloseBrackets: true,
+	matchBrackets: true,
+	autoCloseTags: true,
+	autofocus: true
 });
-editors['css'] = CodeMirror.fromTextArea(document.getElementById('editorSCSS'), {
-	mode: "text/x-scss",
-	theme: "default",
+editors['CSS'] = CodeMirror.fromTextArea(document.getElementById('editorCSS'), {
+	mode: "text/css",
 	lineNumbers: true,
-	lineWrapping: false
+	lineWrapping: false,
+	scrollbarStyle: "simple",
+	autoCloseBrackets: true,
+	matchBrackets: true
 });
-editors['js'] = CodeMirror.fromTextArea(document.getElementById('editorJS'), {
+editors['JS'] = CodeMirror.fromTextArea(document.getElementById('editorJS'), {
 	mode: "javascript",
-	theme: "default",
 	lineNumbers: true,
-	lineWrapping: false
+	lineWrapping: false,
+	scrollbarStyle: "simple",
+	autoCloseBrackets: true,
+	matchBrackets: true
 });
 var space = 0;
 var selections = [];
-selections['html'] = [];
-selections['css'] = [];
-selections['js'] = [];
+selections['HTML'] = [];
+selections['CSS'] = [];
+selections['JS'] = [];
 
 
 // FUNCTIONS
 function setWidthSpace() {
-	editors['html'].setValue(" ");
+	editors['HTML'].setValue(" ");
+	editors['CSS'].setValue(" ");
+	editors['JS'].setValue(" ");
 	space = $('.CodeMirror-line span')[0].getBoundingClientRect().width;
 }
-
+function tabFocusIndicators(clientid) {
+	var users = $('#tabs li[data-editor="HTML"] span i').length + 1;
+	$('#tabs li[data-editor="HTML"] span').append('<i data-client="'+clientid+'"></i>');
+	$('#tabs li[data-editor="HTML"] span i').css('width', 100 / users+'%');
+	$('#tabs li[data-editor="HTML"] span i').each(function(index) {
+		$(this).css('left', index * 100 / users+'%');
+	});
+}
 
 // INITIALIZE
 $(document).ready(function() {
 	socket.emit('join', 'xyz', function(data, socketlist, socketid) {
 		setWidthSpace();
-		editors['html'].setValue(data);
+		editors['HTML'].setValue(data);
+		$('#tabs li[data-editor="HTML"]').addClass('active');
+		$('section').not('#sectionHTML').addClass('inactive');
 		$('#sectionHTML').addClass('active');
 		var mySocketId = socketid.replace('/#', '');
 		socketlist.forEach(function (clientid) {
 			if(mySocketId != clientid) {
 				$('#sectionHTML .CodeMirror-sizer').append('<div data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
-				$('#sectionSCSS .CodeMirror-sizer').append('<div data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
+				$('#sectionCSS .CodeMirror-sizer').append('<div data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
 				$('#sectionJS .CodeMirror-sizer').append('<div data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
+				tabFocusIndicators(clientid);
 			}
 		});
 	});
 });
 
 
-// EDITOR
-editors['html'].setOption('extraKeys', {
+// EDITORS
+editors['HTML'].setOption('extraKeys', {
 	Tab: function(cm) {
 		var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
 		cm.replaceSelection(spaces);
 	}
 });
-editors['css'].setOption('extraKeys', {
+editors['CSS'].setOption('extraKeys', {
 	Tab: function(cm) {
 		var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
 		cm.replaceSelection(spaces);
 	}
 });
-editors['js'].setOption('extraKeys', {
+editors['JS'].setOption('extraKeys', {
 	Tab: function(cm) {
 		var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
 		cm.replaceSelection(spaces);
 	}
 });
 
-editors['html'].on('change', function(editor, data) {
-	console.log('change');
+editors['HTML'].on('focus', function(editor) {
+	console.log('html focus');
+});
+editors['CSS'].on('focus', function(editor) {
+	console.log('css focus');
+});
+editors['JS'].on('focus', function(editor) {
+	console.log('js focus');
+});
+
+editors['HTML'].on('blur', function(editor) {
+	console.log('html blur');
+});
+editors['CSS'].on('blur', function(editor) {
+	console.log('css blur');
+});
+editors['JS'].on('blur', function(editor) {
+	console.log('js blur');
+});
+
+editors['HTML'].on('change', function(editor, data) {
 	if(data.origin == "paste") {
 		var lineFrom = data.from.line;
 	  var lineTo = data.from.line + data.text.length;
@@ -92,12 +131,11 @@ editors['html'].on('change', function(editor, data) {
 		var line = data.from.line;
 		var key = data.text;
 		var cursor = editor.getCursor();
-		data.editor = 'html';
+		data.editor = 'HTML';
 		socket.emit('change', data);
 	}
 });
-editors['css'].on('change', function(editor, data) {
-	console.log('change');
+editors['CSS'].on('change', function(editor, data) {
 	if(data.origin == "paste") {
 		var lineFrom = data.from.line;
 	  var lineTo = data.from.line + data.text.length;
@@ -117,12 +155,11 @@ editors['css'].on('change', function(editor, data) {
 		var line = data.from.line;
 		var key = data.text;
 		var cursor = editor.getCursor();
-		data.editor = 'css';
+		data.editor = 'CSS';
 		socket.emit('change', data);
 	}
 });
-editors['js'].on('change', function(editor, data) {
-	console.log('change');
+editors['JS'].on('change', function(editor, data) {
 	if(data.origin == "paste") {
 		var lineFrom = data.from.line;
 	  var lineTo = data.from.line + data.text.length;
@@ -142,45 +179,45 @@ editors['js'].on('change', function(editor, data) {
 		var line = data.from.line;
 		var key = data.text;
 		var cursor = editor.getCursor();
-		data.editor = 'js';
+		data.editor = 'JS';
 		socket.emit('change', data);
 	}
 });
 
+editors['HTML'].on('cursorActivity', function(editor) {
+	var cursor = editor.getCursor();
+	cursor.editor = 'HTML';
+	var selection = editor.getSelections();
+	if(selection[0].length > 0){
+		socket.emit('client-selection', { from: editor.getCursor(true), to: editor.getCursor(false), editor: cursor.editor });
+	} else {
+		socket.emit('client-selection-clear', cursor.editor);
+	}
+	socket.emit('cursor-activty-client', cursor);
+});
+editors['CSS'].on('cursorActivity', function(editor) {
+	var cursor = editor.getCursor();
+	cursor.editor = 'CSS';
+	var selection = editor.getSelections();
+	if(selection[0].length > 0){
+		socket.emit('client-selection', { from: editor.getCursor(true), to: editor.getCursor(false), editor: cursor.editor });
+	} else {
+		socket.emit('client-selection-clear', cursor.editor);
+	}
+	socket.emit('cursor-activty-client', cursor);
+});
+editors['JS'].on('cursorActivity', function(editor) {
+	var cursor = editor.getCursor();
+	cursor.editor = 'JS';
+	var selection = editor.getSelections();
+	if(selection[0].length > 0){
+		socket.emit('client-selection', { from: editor.getCursor(true), to: editor.getCursor(false), editor: cursor.editor });
+	} else {
+		socket.emit('client-selection-clear', cursor.editor);
+	}
+	socket.emit('cursor-activty-client', cursor);
+});
 
-editors['html'].on('cursorActivity', function(editor) {
-	var cursor = editor.getCursor();
-	cursor.editor = 'html';
-	var selection = editor.getSelections();
-	if(selection[0].length > 0){
-		socket.emit('client-selection', { from: editor.getCursor(true), to: editor.getCursor(false), editor: cursor.editor });
-	} else {
-		socket.emit('client-selection-clear', cursor.editor);
-	}
-	socket.emit('cursor-activty-client', cursor);
-});
-editors['css'].on('cursorActivity', function(editor) {
-	var cursor = editor.getCursor();
-	cursor.editor = 'css';
-	var selection = editor.getSelections();
-	if(selection[0].length > 0){
-		socket.emit('client-selection', { from: editor.getCursor(true), to: editor.getCursor(false), editor: cursor.editor });
-	} else {
-		socket.emit('client-selection-clear', cursor.editor);
-	}
-	socket.emit('cursor-activty-client', cursor);
-});
-editors['js'].on('cursorActivity', function(editor) {
-	var cursor = editor.getCursor();
-	cursor.editor = 'js';
-	var selection = editor.getSelections();
-	if(selection[0].length > 0){
-		socket.emit('client-selection', { from: editor.getCursor(true), to: editor.getCursor(false), editor: cursor.editor });
-	} else {
-		socket.emit('client-selection-clear', cursor.editor);
-	}
-	socket.emit('cursor-activty-client', cursor);
-});
 
 // SOCKET
 socket.on('client-selection-receive', function(selection) {
@@ -203,8 +240,9 @@ socket.on('client-selection-clear-receive', function(data) {
 socket.on('client-joined', function(client) {
 	var clientid = client.replace('/#', '');
 	$('#sectionHTML .CodeMirror-sizer').append('<div data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
-	$('#sectionSCSS .CodeMirror-sizer').append('<div data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
+	$('#sectionCSS .CodeMirror-sizer').append('<div data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
 	$('#sectionJS .CodeMirror-sizer').append('<div data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
+	tabFocusIndicators(clientid);
 });
 
 socket.on('change-receive', function(data) {
@@ -215,11 +253,11 @@ socket.on('cursor-activty', function(cursor) {
 	var clientid = cursor.socketid.replace('/#', '');
 	var lineHeight = $('.CodeMirror-line').height();
 	var sectionHTML = '';
-	if(cursor.editor == 'html'){
+	if(cursor.editor == 'HTML'){
 		sectionHTML = 'sectionHTML';
-	} else if(cursor.editor == 'css') {
-		sectionHTML = 'sectionSCSS';
-	} else if(cursor.editor == 'js') {
+	} else if(cursor.editor == 'CSS') {
+		sectionHTML = 'sectionCSS';
+	} else if(cursor.editor == 'JS') {
 		sectionHTML = 'sectionJS';
 	}
 	$('#' + sectionHTML + ' .custom-cursor[data-client='+clientid+']').css({
@@ -229,7 +267,7 @@ socket.on('cursor-activty', function(cursor) {
 });
 
 socket.on('getValue', function(callback) {
-	callback(editors['html'].getValue());
+	callback(editors['HTML'].getValue());
 });
 
 socket.on('client-left', function(clientId){
@@ -237,15 +275,22 @@ socket.on('client-left', function(clientId){
 	$('#sectionHTML .custom-cursor[data-client='+clientId+']').remove();
 	$('#sectionSCSS .custom-cursor[data-client='+clientId+']').remove();
 	$('#sectionJS .custom-cursor[data-client='+clientId+']').remove();
+	$('#tabs li[data-editor="HTML"] span i[data-client="'+clientId+'"]').remove();
+	tabFocusIndicators(clientid);
 });
 
 
+// TABS
 $('#tabs li').on('click', function() {
 	var editor = $(this).data('editor');
 
 	$('#tabs li').removeClass('active');
-	$(this).addClass('active');
+	$('#tabs li[data-editor="'+editor+'"]').addClass('active');
 
 	$('section').removeClass('active');
+	$('section').removeClass('inactive');
+	$('section').not('#section'+editor).addClass('inactive');
 	$('#section'+editor).addClass('active');
+
+	editors[editor].focus();
 });
