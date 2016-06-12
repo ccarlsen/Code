@@ -6,8 +6,9 @@ editors['HTML'] = CodeMirror.fromTextArea(document.getElementById('editorHTML'),
 	lineNumbers: true,
 	lineWrapping: false,
 	scrollbarStyle: "simple",
-	autoCloseBrackets: true,
 	matchBrackets: true,
+	autoCloseBrackets: true,
+	matchTags: {bothTags: true},
 	autoCloseTags: true,
 	autofocus: true
 });
@@ -16,16 +17,16 @@ editors['CSS'] = CodeMirror.fromTextArea(document.getElementById('editorCSS'), {
 	lineNumbers: true,
 	lineWrapping: false,
 	scrollbarStyle: "simple",
-	autoCloseBrackets: true,
-	matchBrackets: true
+	matchBrackets: true,
+	autoCloseBrackets: true
 });
 editors['JS'] = CodeMirror.fromTextArea(document.getElementById('editorJS'), {
 	mode: "javascript",
 	lineNumbers: true,
 	lineWrapping: false,
 	scrollbarStyle: "simple",
-	autoCloseBrackets: true,
-	matchBrackets: true
+	matchBrackets: true,
+	autoCloseBrackets: true
 });
 var space = 0;
 var selections = [];

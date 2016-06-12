@@ -102,9 +102,34 @@ div.CodeMirror span.CodeMirror-matchingbracket {
 		height: 1px;
 		background: $dark;
 		position: absolute;
-		bottom: -2px; left: 0;
+		bottom: -1px; left: 0;
 	}
 }
 div.CodeMirror span.CodeMirror-nonmatchingbracket {
 	color: #f00;
+}
+
+// MATCH TAGS
+div.CodeMirror span.CodeMirror-matchingtag {
+	background: inherit;
+	position: relative;
+	&:after {
+		content: "";
+		width: 100%;
+		height: 1px;
+		background: $dark;
+		position: absolute;
+		bottom: -1px; left: 0;
+		display: none;
+	}
+}
+div.CodeMirror span.cm-tag.CodeMirror-matchingtag {
+	&:after {
+		display: block;
+	}
+}
+div.CodeMirror span.cm-bracket.CodeMirror-matchingtag {
+	&:after {
+		display: none;
+	}
 }
