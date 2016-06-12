@@ -57,7 +57,9 @@ function setWidthSpace() {
 $(document).ready(function() {
 	socket.emit('join', 'xyz', function(data, socketlist, socketid) {
 		setWidthSpace();
-		editors['HTML'].setValue(data);
+		editors['HTML'].setValue(data.html);
+		editors['CSS'].setValue(data.css);
+		editors['JS'].setValue(data.js);
 		$('#tabs li[data-editor="HTML"]').addClass('active');
 		$('section').not('#sectionHTML').addClass('inactive');
 		$('#sectionHTML').addClass('active');
@@ -256,7 +258,11 @@ socket.on('cursor-activty', function(cursor) {
 });
 
 socket.on('getValue', function(callback) {
-	callback(editors['HTML'].getValue());
+	var editorContent = {};
+	editorContent.html = editors['HTML'].getValue();
+	editorContent.css = editors['CSS'].getValue();
+	editorContent.js = editors['JS'].getValue();
+	callback(editorContent);
 });
 
 socket.on('client-left', function(clientId){
@@ -280,6 +286,7 @@ $('#tabs li').on('click', function() {
 	$('#section'+editor).addClass('active');
 
 	editors[editor].focus();
+	editors[editor].refresh();
 });
 
 

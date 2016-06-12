@@ -28,27 +28,43 @@ server.listen(8888, function () {
 });
 
 io.on('connection', function(socket){
-	console.log('a user connected');
-	socketlist.push(socket);
-
 	socket.on('join', function(room, callback) {
+    room = 'test';
+    if(socketlist[room] == null){
+      socketlist[room] = [];
+    }
+    socketlist[room].push(socket);
 		socket.join(room);
 		socket.room = room;
-		console.log('socketlist length: ' + socketlist.length);
-		if(socketlist.length > 1) {
-			var ownersocket = socketlist[0];
-			ownersocket.emit('getValue', function(data) {
-				fs.writeFile("./public/pen/xyz/index.html", data, function(err) {
-					if(err) {
-						return console.log(err);
-					}
-					console.log("The file was saved!");
-				});
-				callback(data, Object.keys(io.engine.clients), socket.id);
+    var projectPath = './public/pen/' + room;
+		console.log('Sockets in Room: ' + room + ' - ' + socketlist[room].length);
+		if(socketlist[room].length > 1) {
+			var ownersocket = socketlist[room][0];
+			ownersocket.emit('getValue', function(editorContent) {
+        fs.writeFileSync(projectPath + '/index.html', editorContent.html);
+        fs.writeFileSync(projectPath + '/style.css', editorContent.css);
+        fs.writeFileSync(projectPath + '/script.js', editorContent.js);
+				callback(editorContent, Object.keys(io.engine.clients), socket.id);
 			});
 		} else {
-			var data = fs.readFileSync('./public/pen/xyz/index.html' ,'utf8');
-			callback(data, Object.keys(io.engine.clients), socket.id);
+      var fileContents = {};
+      try {
+          fs.statSync(projectPath).isDirectory();
+          fileContents.html = fs.readFileSync(projectPath + '/index.html' ,'utf8');
+          fileContents.css = fs.readFileSync(projectPath + '/style.css' ,'utf8');
+          fileContents.js = fs.readFileSync(projectPath + '/script.js' ,'utf8');
+          callback(fileContents, Object.keys(io.engine.clients), socket.id);
+      }
+      catch (err) {
+        fs.mkdirSync(projectPath);
+        fs.writeFileSync(projectPath + '/index.html', '<!-- HTML -->');
+        fs.writeFileSync(projectPath + '/style.css', '/* CSS */');
+        fs.writeFileSync(projectPath + '/script.js', '// JavaScript');
+        fileContents.html = fs.readFileSync(projectPath + '/index.html' ,'utf8');
+        fileContents.css = fs.readFileSync(projectPath + '/style.css' ,'utf8');
+        fileContents.js = fs.readFileSync(projectPath + '/script.js' ,'utf8');
+        callback(fileContents, Object.keys(io.engine.clients), socket.id);
+      }
 		}
 		socket.broadcast.to(socket.room).emit('client-joined', socket.id);
 	});
@@ -77,8 +93,8 @@ io.on('connection', function(socket){
 
 	socket.on('disconnect', function() {
       console.log('Room: ' + socket.room + ' id: ' + socket.id + 'Got disconnect!');
-      var i = socketlist.indexOf(socket);
-      socketlist.splice(i, 1);
+      var i = socketlist[socket.room].indexOf(socket);
+      socketlist[socket.room].splice(i, 1);
 	  io.to(socket.room).emit('client-left', socket.id);
    });
 });
