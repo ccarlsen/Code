@@ -135,10 +135,6 @@ editors['HTML'].on('change', function(editor, data) {
 	}
 
 	if(data.origin != 'change' && data.origin != 'setValue') {
-		var char = data.from.ch;
-		var line = data.from.line;
-		var key = data.text;
-		var cursor = editor.getCursor();
 		data.editor = 'HTML';
 		socket.emit('change', data);
 	}
@@ -159,10 +155,6 @@ editors['CSS'].on('change', function(editor, data) {
 	}
 
 	if(data.origin != 'change' && data.origin != 'setValue') {
-		var char = data.from.ch;
-		var line = data.from.line;
-		var key = data.text;
-		var cursor = editor.getCursor();
 		data.editor = 'CSS';
 		socket.emit('change', data);
 	}
@@ -183,10 +175,6 @@ editors['JS'].on('change', function(editor, data) {
 	}
 
 	if(data.origin != 'change' && data.origin != 'setValue') {
-		var char = data.from.ch;
-		var line = data.from.line;
-		var key = data.text;
-		var cursor = editor.getCursor();
 		data.editor = 'JS';
 		socket.emit('change', data);
 	}
