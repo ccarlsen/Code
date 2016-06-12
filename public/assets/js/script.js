@@ -50,18 +50,10 @@ function setWidthSpace() {
 	editors['JS'].setValue(" ");
 	space = $('.CodeMirror-line span')[0].getBoundingClientRect().width;
 }
-function tabFocusIndicators(clientid) {
-	var users = $('#tabs li[data-editor="HTML"] span i').length + 1;
-	$('#tabs li[data-editor="HTML"] span').append('<i data-client="'+clientid+'"></i>');
-	$('#tabs li[data-editor="HTML"] span i').css('width', 100 / users+'%');
-	$('#tabs li[data-editor="HTML"] span i').each(function(index) {
-		$(this).css('left', index * 100 / users+'%');
-	});
-}
+
 
 // INITIALIZE
 $(document).ready(function() {
-	console.log(asideWidth);
 	socket.emit('join', 'xyz', function(data, socketlist, socketid) {
 		setWidthSpace();
 		editors['HTML'].setValue(data);
@@ -74,7 +66,6 @@ $(document).ready(function() {
 				$('#sectionHTML .CodeMirror-sizer').append('<div data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
 				$('#sectionCSS .CodeMirror-sizer').append('<div data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
 				$('#sectionJS .CodeMirror-sizer').append('<div data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
-				tabFocusIndicators(clientid);
 			}
 		});
 	});
@@ -252,7 +243,6 @@ socket.on('client-joined', function(client) {
 	$('#sectionHTML .CodeMirror-sizer').append('<div data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
 	$('#sectionCSS .CodeMirror-sizer').append('<div data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
 	$('#sectionJS .CodeMirror-sizer').append('<div data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
-	tabFocusIndicators(clientid);
 });
 
 socket.on('change-receive', function(data) {
@@ -285,8 +275,6 @@ socket.on('client-left', function(clientId){
 	$('#sectionHTML .custom-cursor[data-client='+clientId+']').remove();
 	$('#sectionSCSS .custom-cursor[data-client='+clientId+']').remove();
 	$('#sectionJS .custom-cursor[data-client='+clientId+']').remove();
-	$('#tabs li[data-editor="HTML"] span i[data-client="'+clientId+'"]').remove();
-	tabFocusIndicators(clientid);
 });
 
 
@@ -312,9 +300,9 @@ Split(['aside', 'main'], {
 	gutterSize: 9,
 	minSize: 500,
 	onDrag: function() {
-		editors['HTML'].setSize("100%", "100%");
-		editors['CSS'].setSize("100%", "100%");
-		editors['JS'].setSize("100%", "100%");
+		editors['HTML'].setSize('100%', '100%');
+		editors['CSS'].setSize('100%', '100%');
+		editors['JS'].setSize('100%', '100%');
 	},
 	onDragEnd: function() {
 		var regex1 = /(100|[0-9]{1,2})(\.[0-9]{1,8})?/g;
