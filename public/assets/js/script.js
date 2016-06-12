@@ -317,8 +317,15 @@ Split(['aside', 'main'], {
 		editors['JS'].setSize("100%", "100%");
 	},
 	onDragEnd: function() {
-		console.log($('aside').attr('style'));
-		localStorage.setItem('asideWidth', '40');
-		localStorage.setItem('mainWidth', '60');
+		var regex1 = /(100|[0-9]{1,2})(\.[0-9]{1,8})?/g;
+		var regex2 = /(100|[0-9]{1,2})(\.[0-9]{1,8})?/g;
+		var aside = $('aside').attr('style');
+		var main = $('main').attr('style');
+		aside = regex1.exec(aside);
+		main = regex2.exec(main);
+		aside = Math.round(aside[0]);
+		main = Math.round(main[0]);
+		localStorage.setItem('asideWidth', aside);
+		localStorage.setItem('mainWidth', main);
 	}
 });
