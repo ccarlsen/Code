@@ -32,6 +32,15 @@ var selections = [];
 selections['HTML'] = [];
 selections['CSS'] = [];
 selections['JS'] = [];
+var asideWidth = localStorage.getItem('asideWidth');
+var mainWidth = localStorage.getItem('mainWidth');
+if (asideWidth == null && mainWidth == null) {
+	asideWidth = 50;
+	mainWidth = 50;
+} else {
+	asideWidth = parseInt(asideWidth);
+	mainWidth = parseInt(mainWidth);
+}
 
 
 // FUNCTIONS
@@ -52,6 +61,7 @@ function tabFocusIndicators(clientid) {
 
 // INITIALIZE
 $(document).ready(function() {
+	console.log(asideWidth);
 	socket.emit('join', 'xyz', function(data, socketlist, socketid) {
 		setWidthSpace();
 		editors['HTML'].setValue(data);
@@ -293,4 +303,22 @@ $('#tabs li').on('click', function() {
 	$('#section'+editor).addClass('active');
 
 	editors[editor].focus();
+});
+
+
+// SPLIT.JS
+Split(['aside', 'main'], {
+	sizes: [asideWidth, mainWidth],
+	gutterSize: 9,
+	minSize: 500,
+	onDrag: function() {
+		editors['HTML'].setSize("100%", "100%");
+		editors['CSS'].setSize("100%", "100%");
+		editors['JS'].setSize("100%", "100%");
+	},
+	onDragEnd: function() {
+		console.log($('aside').attr('style'));
+		localStorage.setItem('asideWidth', '40');
+		localStorage.setItem('mainWidth', '60');
+	}
 });

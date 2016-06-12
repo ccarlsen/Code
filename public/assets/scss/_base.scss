@@ -14,6 +14,10 @@ html {
 	box-sizing: inherit;
 }
 
+html, body {
+	height: 100%;
+}
+
 body {
 	background: white;
 	font-family: "Roboto", sans-serif;
@@ -26,4 +30,25 @@ body {
 ::selection {
 	color: white;
 	background: black;
+}
+
+.gutter {
+	height: 100%;
+	background: white;
+	border-right: 1px solid $grey - 20;
+	position: relative;
+	float: left;
+	z-index: 99;
+	cursor: ew-resize;
+	&:before {
+		content: "";
+		width: 3px;
+		height: 3px;
+		background: $grey - 20;
+		border-radius: 100%;
+		box-shadow: 0 -5px 0 0px $grey - 20, 0 5px 0 0px $grey - 20;
+		position: absolute;
+		top: 50%; left: 50%;
+		transform: translate(-50%, -50%);
+	}
 }

@@ -1,9 +1,7 @@
 main {
-	width: calc(100% - 600px);
-	height: 100vh;
-	box-shadow: 0 0 50px rgba(black, 0.15);
-	position: absolute;
-	top: 0; right: 0;
+	height: 100%;
+	position: relative;
+	float: left;
 	z-index: 6;
 	iframe {
 		width: 100%;
