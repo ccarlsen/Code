@@ -97,22 +97,28 @@ editors['JS'].setOption('extraKeys', {
 
 editors['HTML'].on('focus', function(editor) {
 	console.log('html focus');
+	socket.emit('focus', 'HTML');
 });
 editors['CSS'].on('focus', function(editor) {
 	console.log('css focus');
+	socket.emit('focus', 'CSS');
 });
 editors['JS'].on('focus', function(editor) {
 	console.log('js focus');
+	socket.emit('focus', 'JS');
 });
 
 editors['HTML'].on('blur', function(editor) {
 	console.log('html blur');
+	socket.emit('blur', 'HTML');
 });
 editors['CSS'].on('blur', function(editor) {
 	console.log('css blur');
+	socket.emit('blur', 'CSS');
 });
 editors['JS'].on('blur', function(editor) {
 	console.log('js blur');
+	socket.emit('blur', 'JS');
 });
 
 editors['HTML'].on('change', function(editor, data) {
@@ -243,15 +249,8 @@ socket.on('change-receive', function(data) {
 socket.on('cursor-activty', function(cursor) {
 	var clientid = cursor.socketid.replace('/#', '');
 	var lineHeight = $('.CodeMirror-line').height();
-	var sectionHTML = '';
-	if(cursor.editor == 'HTML'){
-		sectionHTML = 'sectionHTML';
-	} else if(cursor.editor == 'CSS') {
-		sectionHTML = 'sectionCSS';
-	} else if(cursor.editor == 'JS') {
-		sectionHTML = 'sectionJS';
-	}
-	$('#' + sectionHTML + ' .custom-cursor[data-client='+clientid+']').css({
+	getSectionSelectorByType(cursor.editor);
+	$('#' + getSectionSelectorByType(cursor.editor) + ' .custom-cursor[data-client='+clientid+']').css({
 		"top": (cursor.line*lineHeight),
 		"left": (((cursor.ch)*space))
 	});
@@ -265,10 +264,20 @@ socket.on('getValue', function(callback) {
 	callback(editorContent);
 });
 
+socket.on('hide-cursor', function(data) {
+	var clientid = data.socketid.replace('/#', '');
+	$('#' + getSectionSelectorByType(data.editor) + ' .custom-cursor[data-client='+clientid+']').css('visibility', 'hidden');
+});
+
+socket.on('show-cursor', function(data) {
+	var clientid = data.socketid.replace('/#', '');
+	$('#' + getSectionSelectorByType(data.editor) + ' .custom-cursor[data-client='+clientid+']').css('visibility', 'visible');
+});
+
 socket.on('client-left', function(clientId){
 	clientId = clientId.replace('/#', '');
 	$('#sectionHTML .custom-cursor[data-client='+clientId+']').remove();
-	$('#sectionSCSS .custom-cursor[data-client='+clientId+']').remove();
+	$('#sectionCSS .custom-cursor[data-client='+clientId+']').remove();
 	$('#sectionJS .custom-cursor[data-client='+clientId+']').remove();
 });
 
@@ -313,3 +322,14 @@ Split(['aside', 'main'], {
 		localStorage.setItem('mainWidth', main);
 	}
 });
+
+function getSectionSelectorByType(typ) {
+	if(typ == 'HTML'){
+		return 'sectionHTML';
+	} else if(typ == 'CSS') {
+		return 'sectionCSS';
+	} else if(typ == 'JS') {
+		return 'sectionJS';
+	}
+	return '';
+}

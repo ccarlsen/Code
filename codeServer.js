@@ -91,6 +91,20 @@ io.on('connection', function(socket){
 		socket.broadcast.to(socket.room).emit('client-selection-clear-receive', {socketid: socket.id, editor: editor});
 	});
 
+  socket.on('blur', function (editor) {
+		var data = {};
+    data.editor = editor;
+    data.socketid = socket.id;
+		socket.broadcast.to(socket.room).emit('hide-cursor', data);
+	});
+
+  socket.on('focus', function (editor) {
+		var data = {};
+    data.editor = editor;
+    data.socketid = socket.id;
+		socket.broadcast.to(socket.room).emit('show-cursor', data);
+	});
+
 	socket.on('disconnect', function() {
       console.log('Room: ' + socket.room + ' id: ' + socket.id + 'Got disconnect!');
       var i = socketlist[socket.room].indexOf(socket);
