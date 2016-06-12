@@ -95,22 +95,28 @@ editors['JS'].setOption('extraKeys', {
 
 editors['HTML'].on('focus', function(editor) {
 	console.log('html focus');
+	$('#tabs li[data-editor="HTML"] span i').show();
 });
 editors['CSS'].on('focus', function(editor) {
 	console.log('css focus');
+	$('#tabs li[data-editor="CSS"] span i').show();
 });
 editors['JS'].on('focus', function(editor) {
 	console.log('js focus');
+	$('#tabs li[data-editor="JS"] span i').show();
 });
 
 editors['HTML'].on('blur', function(editor) {
 	console.log('html blur');
+	$('#tabs li[data-editor="HTML"] span i').hide();
 });
 editors['CSS'].on('blur', function(editor) {
 	console.log('css blur');
+	$('#tabs li[data-editor="CSS"] span i').hide();
 });
 editors['JS'].on('blur', function(editor) {
 	console.log('js blur');
+	$('#tabs li[data-editor="JS"] span i').hide();
 });
 
 editors['HTML'].on('change', function(editor, data) {

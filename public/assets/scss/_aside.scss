@@ -35,6 +35,11 @@ aside {
 				background: $grey;
 				color: $blue;
 				cursor: default;
+				span {
+					i {
+						display: block;
+					}
+				}
 			}
 			span {
 				width: 100%;
@@ -47,12 +52,7 @@ aside {
 					background: $blue;
 					position: absolute;
 					top: 0; left: 0;
-					&:nth-child(2) {
-						background: $pink;
-					}
-					&:nth-child(3) {
-						background: $green;
-					}
+					display: none;
 				}
 			}
 		}
