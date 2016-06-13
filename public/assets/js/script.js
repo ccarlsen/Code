@@ -223,9 +223,7 @@ editors['JS'].on('cursorActivity', function(editor) {
 // SOCKET
 socket.on('client-selection-receive', function(selection) {
 	var clientId = selection.socketid.replace('/#', '');
-	if(selections[selection.editor] !== undefined && selections[selection.editor][clientId] !== undefined) {
-		selections[selection.editor][clientId].clear();
-	}
+	clearSelection(selection.editor, clientId);
 	selections[selection.editor][clientId] = editors[selection.editor].getDoc().markText({line: selection.from.line, ch: selection.from.ch}, {line: selection.to.line, ch: selection.to.ch}, {
 		className: 'custom-selection',
 	});
@@ -233,9 +231,7 @@ socket.on('client-selection-receive', function(selection) {
 
 socket.on('client-selection-clear-receive', function(data) {
 	var clientId = data.socketid.replace('/#', '');
-	if(selections[data.editor] !== undefined && selections[data.editor][clientId] !== undefined) {
-		selections[data.editor][clientId].clear();
-	}
+	clearSelection(data.editor, clientId);
 });
 
 socket.on('client-joined', function(client) {
@@ -282,6 +278,9 @@ socket.on('client-left', function(clientId){
 	$('#sectionHTML .custom-cursor[data-client='+clientId+']').remove();
 	$('#sectionCSS .custom-cursor[data-client='+clientId+']').remove();
 	$('#sectionJS .custom-cursor[data-client='+clientId+']').remove();
+	clearSelection('HTML', clientId);
+	clearSelection('CSS', clientId);
+	clearSelection('JS', clientId);
 });
 
 
@@ -335,4 +334,10 @@ function getSectionSelectorByType(typ) {
 		return 'sectionJS';
 	}
 	return '';
+}
+
+function clearSelection(editorTyp, clientId){
+	if(selections[editorTyp] !== undefined && selections[editorTyp][clientId] !== undefined) {
+		selections[editorTyp][clientId].clear();
+	}
 }
