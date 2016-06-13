@@ -48,6 +48,9 @@ aside {
 					position: absolute;
 					top: 0; left: 0;
 					display: none;
+					&[data-user="2"] { background: $pink; }
+					&[data-user="3"] { background: $green; }
+					&[data-user="4"] { background: $orange; }
 				}
 			}
 		}
@@ -58,10 +61,10 @@ aside {
 		position: absolute;
 		bottom: 0; left: 0;
 		&.active {
-			transform: translatey(0%);
+			transform: translateY(0%);
 		}
 		&.inactive {
-			transform: translatey(100%);
+			transform: translateY(100%);
 		}
 	}
 }

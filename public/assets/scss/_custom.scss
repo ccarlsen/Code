@@ -52,18 +52,24 @@
 		content: "";
 		width: 100%;
 		height: 16px;
-		background: rgba($pink, 0.2);
+		background: rgba(black, 0.2);
 		position: absolute;
 		top: -1px; left: 0;
 		z-index: -1;
 	}
+	&[data-user="2"] { &:before { background: rgba($pink, 0.2); } }
+	&[data-user="3"] { &:before { background: rgba($green, 0.2); } }
+	&[data-user="4"] { &:before { background: rgba($orange, 0.2); } }
 }
 .custom-cursor {
 	width: 0px;
 	height: 16px;
-	border-left: 2px solid $pink;
+	border-left: 2px solid black;
 	position: absolute;
 	transform: translate(4px, 4px);
+	&[data-user="2"] { border-color: $pink; }
+	&[data-user="3"] { border-color: $green; }
+	&[data-user="4"] { border-color: $orange; }
 }
 
 
