@@ -3,6 +3,7 @@ var socket = io.connect();
 var editors = [];
 editors['HTML'] = CodeMirror.fromTextArea(document.getElementById('editorHTML'), {
 	mode: "htmlmixed",
+	cursorBlinkRate: 0,
 	lineNumbers: true,
 	lineWrapping: false,
 	scrollbarStyle: "simple",
@@ -14,6 +15,7 @@ editors['HTML'] = CodeMirror.fromTextArea(document.getElementById('editorHTML'),
 });
 editors['CSS'] = CodeMirror.fromTextArea(document.getElementById('editorCSS'), {
 	mode: "text/css",
+	cursorBlinkRate: 0,
 	lineNumbers: true,
 	lineWrapping: false,
 	scrollbarStyle: "simple",
@@ -22,6 +24,7 @@ editors['CSS'] = CodeMirror.fromTextArea(document.getElementById('editorCSS'), {
 });
 editors['JS'] = CodeMirror.fromTextArea(document.getElementById('editorJS'), {
 	mode: "javascript",
+	cursorBlinkRate: 0,
 	lineNumbers: true,
 	lineWrapping: false,
 	scrollbarStyle: "simple",

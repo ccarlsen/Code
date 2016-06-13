@@ -13,7 +13,7 @@ aside {
 		box-shadow: 0 0 10px rgba(black, 0.1);
 		position: absolute;
 		top: 0; left: 0;
-		z-index: 7;
+		z-index: 10;
 		li {
 			width: (100% / 3);
 			height: 100%;
@@ -58,10 +58,10 @@ aside {
 		position: absolute;
 		bottom: 0; left: 0;
 		&.active {
-			visibility: visible;
+			transform: translatey(0%);
 		}
 		&.inactive {
-			visibility: hidden;
+			transform: translatey(100%);
 		}
 	}
 }

@@ -38,7 +38,6 @@ body {
 	border-right: 1px solid $grey - 20;
 	position: relative;
 	float: left;
-	z-index: 99;
 	cursor: ew-resize;
 	&:before {
 		content: "";
