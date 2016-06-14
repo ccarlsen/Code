@@ -58,7 +58,7 @@ function setWidthSpace() {
 
 // INITIALIZE
 $(document).ready(function() {
-	socket.emit('join', 'xyz', function(data, socketlist, socketid) {
+	socket.emit('join', 'xyz', function(data, socketinfolist, mySocketInfo) {
 		setWidthSpace();
 		editors['HTML'].setValue(data.html);
 		editors['CSS'].setValue(data.css);
@@ -66,12 +66,14 @@ $(document).ready(function() {
 		$('#tabs li[data-editor="HTML"]').addClass('active');
 		$('section').not('#sectionHTML').addClass('inactive');
 		$('#sectionHTML').addClass('active');
-		var mySocketId = socketid.replace('/#', '');
-		socketlist.forEach(function (clientid) {
+		var mySocketId = mySocketInfo.clientid.replace('/#', '');
+		socketinfolist.forEach(function (socketinfo) {
+			console.log(socketinfo);
+			var clientid = socketinfo.clientid.replace('/#', '');
 			if(mySocketId != clientid) {
-				$('#sectionHTML .CodeMirror-sizer').append('<div data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
-				$('#sectionCSS .CodeMirror-sizer').append('<div data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
-				$('#sectionJS .CodeMirror-sizer').append('<div data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
+				$('#sectionHTML .CodeMirror-sizer').append('<div data-user="'+socketinfo.usernumber+'" data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
+				$('#sectionCSS .CodeMirror-sizer').append('<div data-user="'+socketinfo.usernumber+'" data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
+				$('#sectionJS .CodeMirror-sizer').append('<div data-user="'+socketinfo.usernumber+'" data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
 			}
 		});
 	});
@@ -222,23 +224,24 @@ editors['JS'].on('cursorActivity', function(editor) {
 
 // SOCKET
 socket.on('client-selection-receive', function(selection) {
-	var clientId = selection.socketid.replace('/#', '');
+	var clientId = selection.socketinfo.clientid.replace('/#', '');
 	clearSelection(selection.editor, clientId);
+	var classname = 'custom-selection-' + selection.socketinfo.usernumber;
 	selections[selection.editor][clientId] = editors[selection.editor].getDoc().markText({line: selection.from.line, ch: selection.from.ch}, {line: selection.to.line, ch: selection.to.ch}, {
-		className: 'custom-selection',
+		className: classname,
 	});
 });
 
 socket.on('client-selection-clear-receive', function(data) {
-	var clientId = data.socketid.replace('/#', '');
+	var clientId = data.socketinfo.clientid.replace('/#', '');
 	clearSelection(data.editor, clientId);
 });
 
-socket.on('client-joined', function(client) {
-	var clientid = client.replace('/#', '');
-	$('#sectionHTML .CodeMirror-sizer').append('<div data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
-	$('#sectionCSS .CodeMirror-sizer').append('<div data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
-	$('#sectionJS .CodeMirror-sizer').append('<div data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
+socket.on('client-joined', function(socketInfo) {
+	var clientid = socketInfo.clientid.replace('/#', '');
+	$('#sectionHTML .CodeMirror-sizer').append('<div data-user="'+socketInfo.usernumber+'" data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
+	$('#sectionCSS .CodeMirror-sizer').append('<div data-user="'+socketInfo.usernumber+'" data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
+	$('#sectionJS .CodeMirror-sizer').append('<div data-user="'+socketInfo.usernumber+'" data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
 });
 
 socket.on('change-receive', function(data) {
