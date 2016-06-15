@@ -6,6 +6,7 @@ var http = require('http');
 var fs = require("fs");
 var socketlist = [];
 var socketinfolist = [];
+var userlimit = 4;
 
 app.use(express.static(__dirname + '/public'));
 
@@ -37,45 +38,50 @@ io.on('connection', function(socket){
     if(socketinfolist[room] == null){
       socketinfolist[room] = [];
     }
-		socket.join(room);
-		socket.room = room;
-    socket.socketinfo = {};
-    socket.socketinfo.room = room;
-    socket.socketinfo.clientid = socket.id;
-    socket.socketinfo.usernumber = getNextUsernumber(socketlist[room]);
-    socketlist[room].push(socket);
-    socketinfolist[room].push(socket.socketinfo);
-    var projectPath = './public/pen/' + room;
-		console.log('Sockets in Room: ' + room + ' - ' + socketlist[room].length);
-		if(socketlist[room].length > 1) {
-			var ownersocket = socketlist[room][0];
-			ownersocket.emit('getValue', function(editorContent) {
-        fs.writeFileSync(projectPath + '/index.html', editorContent.html);
-        fs.writeFileSync(projectPath + '/style.css', editorContent.css);
-        fs.writeFileSync(projectPath + '/script.js', editorContent.js);
-				callback(editorContent, socketinfolist[room], socket.socketinfo);
-			});
-		} else {
-      var fileContents = {};
-      try {
-          fs.statSync(projectPath).isDirectory();
+    if(socketlist[room].length == userlimit){
+      var data = {error: 'This room is full!'}
+      callback(data, null, null);
+    } else {
+  		socket.join(room);
+  		socket.room = room;
+      socket.socketinfo = {};
+      socket.socketinfo.room = room;
+      socket.socketinfo.clientid = socket.id;
+      socket.socketinfo.usernumber = getNextUsernumber(socketlist[room]);
+      socketlist[room].push(socket);
+      socketinfolist[room].push(socket.socketinfo);
+      var projectPath = './public/pen/' + room;
+  		console.log('Clients in Room: ' + room + ' - ' + socketlist[room].length);
+  		if(socketlist[room].length > 1) {
+  			var ownersocket = socketlist[room][0];
+  			ownersocket.emit('getValue', function(editorContent) {
+          fs.writeFileSync(projectPath + '/index.html', editorContent.html);
+          fs.writeFileSync(projectPath + '/style.css', editorContent.css);
+          fs.writeFileSync(projectPath + '/script.js', editorContent.js);
+  				callback(editorContent, socketinfolist[room], socket.socketinfo);
+  			});
+  		} else {
+        var fileContents = {};
+        try {
+            fs.statSync(projectPath).isDirectory();
+            fileContents.html = fs.readFileSync(projectPath + '/index.html' ,'utf8');
+            fileContents.css = fs.readFileSync(projectPath + '/style.css' ,'utf8');
+            fileContents.js = fs.readFileSync(projectPath + '/script.js' ,'utf8');
+            callback(fileContents, socketinfolist[room], socket.socketinfo);
+        }
+        catch (err) {
+          fs.mkdirSync(projectPath);
+          fs.writeFileSync(projectPath + '/index.html', '<!-- HTML -->');
+          fs.writeFileSync(projectPath + '/style.css', '/* CSS */');
+          fs.writeFileSync(projectPath + '/script.js', '// JavaScript');
           fileContents.html = fs.readFileSync(projectPath + '/index.html' ,'utf8');
           fileContents.css = fs.readFileSync(projectPath + '/style.css' ,'utf8');
           fileContents.js = fs.readFileSync(projectPath + '/script.js' ,'utf8');
           callback(fileContents, socketinfolist[room], socket.socketinfo);
-      }
-      catch (err) {
-        fs.mkdirSync(projectPath);
-        fs.writeFileSync(projectPath + '/index.html', '<!-- HTML -->');
-        fs.writeFileSync(projectPath + '/style.css', '/* CSS */');
-        fs.writeFileSync(projectPath + '/script.js', '// JavaScript');
-        fileContents.html = fs.readFileSync(projectPath + '/index.html' ,'utf8');
-        fileContents.css = fs.readFileSync(projectPath + '/style.css' ,'utf8');
-        fileContents.js = fs.readFileSync(projectPath + '/script.js' ,'utf8');
-        callback(fileContents, socketinfolist[room], socket.socketinfo);
-      }
-		}
-		socket.broadcast.to(socket.room).emit('client-joined', socket.socketinfo);
+        }
+  		}
+  		socket.broadcast.to(socket.room).emit('client-joined', socket.socketinfo);
+    }
 	});
 
 
@@ -116,11 +122,13 @@ io.on('connection', function(socket){
 
 	socket.on('disconnect', function() {
       console.log('Room: ' + socket.room + ' id: ' + socket.id + 'Got disconnect!');
-      var i = socketlist[socket.room].indexOf(socket);
-      var j = socketinfolist[socket.room].indexOf(socket.socketinfo);
-      socketlist[socket.room].splice(i, 1);
-      socketinfolist[socket.room].splice(j, 1);
-	    io.to(socket.room).emit('client-left', socket.id);
+      if(socket.room != null) {
+        var i = socketlist[socket.room].indexOf(socket);
+        var j = socketinfolist[socket.room].indexOf(socket.socketinfo);
+        socketlist[socket.room].splice(i, 1);
+        socketinfolist[socket.room].splice(j, 1);
+  	    io.to(socket.room).emit('client-left', socket.id);
+      }
    });
 });
 
@@ -128,7 +136,7 @@ function getNextUsernumber (socketlist){
   if(socketlist.length == 0){
     return 1;
   }
-  for (i = 1; i <= 4; i++) {
+  for (i = 1; i <= userlimit; i++) {
     var foundFreeNumber = true;
     for (j = 0; j < socketlist.length; j++) {
       if(socketlist[j].socketinfo.usernumber == i) {

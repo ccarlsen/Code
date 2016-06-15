@@ -59,6 +59,10 @@ function setWidthSpace() {
 // INITIALIZE
 $(document).ready(function() {
 	socket.emit('join', 'xyz', function(data, socketinfolist, mySocketInfo) {
+		if(mySocketInfo == null){
+			alert(data.error);
+			return;
+		}
 		setWidthSpace();
 		editors['HTML'].setValue(data.html);
 		editors['CSS'].setValue(data.css);
