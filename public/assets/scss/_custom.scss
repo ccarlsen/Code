@@ -7,9 +7,6 @@
 	font-size: 12px;
 	font-weight: 500;
 }
-.CodeMirror-focused .CodeMirror-cursors {
-	//visibility: visible !important;
-}
 .CodeMirror-cursor {
 	border-left: 2px solid $blue;
 }
@@ -26,6 +23,39 @@
 .CodeMirror-linenumber {
 	color: #A0A1A7;
 	transform: scale(0.8);
+}
+body[data-user="1"] {
+	.CodeMirror-cursor {
+		border-left: 2px solid $pink;
+	}
+	.CodeMirror-selected {
+		background: rgba($pink, 0.2);
+	}
+	.CodeMirror-focused .CodeMirror-selected {
+		background: rgba($pink, 0.2);
+	}	
+}
+body[data-user="2"] {
+	.CodeMirror-cursor {
+		border-left: 2px solid $green;
+	}
+	.CodeMirror-selected {
+		background: rgba($green, 0.2);
+	}
+	.CodeMirror-focused .CodeMirror-selected {
+		background: rgba($green, 0.2);
+	}	
+}
+body[data-user="3"] {
+	.CodeMirror-cursor {
+		border-left: 2px solid $orange;
+	}
+	.CodeMirror-selected {
+		background: rgba($orange, 0.2);
+	}
+	.CodeMirror-focused .CodeMirror-selected {
+		background: rgba($orange, 0.2);
+	}	
 }
 
 
@@ -46,7 +76,7 @@
 
 
 // CUSTOM
-.custom-selection {
+*[class*="custom-selection-"] {
 	position: relative;
 	&:before {
 		content: "";
@@ -57,16 +87,19 @@
 		top: -1px; left: 0;
 		z-index: -1;
 	}
-	&[data-user="2"] { &:before { background: rgba($pink, 0.2); } }
-	&[data-user="3"] { &:before { background: rgba($green, 0.2); } }
-	&[data-user="4"] { &:before { background: rgba($orange, 0.2); } }
 }
+.custom-selection-1 { &:before { background: rgba($blue, 0.2); } }
+.custom-selection-2 { &:before { background: rgba($pink, 0.2); } }
+.custom-selection-3 { &:before { background: rgba($green, 0.2); } }
+.custom-selection-4 { &:before { background: rgba($orange, 0.2); } }
+
 .custom-cursor {
 	width: 0px;
 	height: 16px;
 	border-left: 2px solid black;
 	position: absolute;
 	transform: translate(4px, 4px);
+	&[data-user="1"] { border-color: $blue; }
 	&[data-user="2"] { border-color: $pink; }
 	&[data-user="3"] { border-color: $green; }
 	&[data-user="4"] { border-color: $orange; }

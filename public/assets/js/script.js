@@ -68,12 +68,13 @@ $(document).ready(function() {
 		$('#sectionHTML').addClass('active');
 		var mySocketId = mySocketInfo.clientid.replace('/#', '');
 		socketinfolist.forEach(function (socketinfo) {
-			console.log(socketinfo);
+			//console.log(socketinfo);
 			var clientid = socketinfo.clientid.replace('/#', '');
 			if(mySocketId != clientid) {
 				$('#sectionHTML .CodeMirror-sizer').append('<div data-user="'+socketinfo.usernumber+'" data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
 				$('#sectionCSS .CodeMirror-sizer').append('<div data-user="'+socketinfo.usernumber+'" data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
 				$('#sectionJS .CodeMirror-sizer').append('<div data-user="'+socketinfo.usernumber+'" data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
+				$('body').attr('data-user', socketinfo.usernumber);
 			}
 		});
 	});
@@ -101,28 +102,22 @@ editors['JS'].setOption('extraKeys', {
 });
 
 editors['HTML'].on('focus', function(editor) {
-	console.log('html focus');
 	socket.emit('focus', 'HTML');
 });
 editors['CSS'].on('focus', function(editor) {
-	console.log('css focus');
 	socket.emit('focus', 'CSS');
 });
 editors['JS'].on('focus', function(editor) {
-	console.log('js focus');
 	socket.emit('focus', 'JS');
 });
 
 editors['HTML'].on('blur', function(editor) {
-	console.log('html blur');
 	socket.emit('blur', 'HTML');
 });
 editors['CSS'].on('blur', function(editor) {
-	console.log('css blur');
 	socket.emit('blur', 'CSS');
 });
 editors['JS'].on('blur', function(editor) {
-	console.log('js blur');
 	socket.emit('blur', 'JS');
 });
 
@@ -242,6 +237,7 @@ socket.on('client-joined', function(socketInfo) {
 	$('#sectionHTML .CodeMirror-sizer').append('<div data-user="'+socketInfo.usernumber+'" data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
 	$('#sectionCSS .CodeMirror-sizer').append('<div data-user="'+socketInfo.usernumber+'" data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
 	$('#sectionJS .CodeMirror-sizer').append('<div data-user="'+socketInfo.usernumber+'" data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
+	$('body').attr('data-user', socketInfo.usernumber);
 });
 
 socket.on('change-receive', function(data) {
