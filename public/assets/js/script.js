@@ -74,6 +74,7 @@ $(document).ready(function() {
 				$('#sectionHTML .CodeMirror-sizer').append('<div data-user="'+socketinfo.usernumber+'" data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
 				$('#sectionCSS .CodeMirror-sizer').append('<div data-user="'+socketinfo.usernumber+'" data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
 				$('#sectionJS .CodeMirror-sizer').append('<div data-user="'+socketinfo.usernumber+'" data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
+			} else {
 				$('body').attr('data-user', socketinfo.usernumber);
 			}
 		});
@@ -237,7 +238,6 @@ socket.on('client-joined', function(socketInfo) {
 	$('#sectionHTML .CodeMirror-sizer').append('<div data-user="'+socketInfo.usernumber+'" data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
 	$('#sectionCSS .CodeMirror-sizer').append('<div data-user="'+socketInfo.usernumber+'" data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
 	$('#sectionJS .CodeMirror-sizer').append('<div data-user="'+socketInfo.usernumber+'" data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
-	$('body').attr('data-user', socketInfo.usernumber);
 });
 
 socket.on('change-receive', function(data) {
