@@ -56,7 +56,7 @@ io.on('connection', function(socket){
       var projectPath = rootPath + room;
   		console.log('Clients in Room: ' + room + ' - ' + socketlist[room].length);
   		if(socketlist[room].length > 1) {
-          save(room, function(){
+          save(room, function(editorContent){
             callback(editorContent, socketinfolist[room], socket.socketinfo);
           });
   		} else {
@@ -88,8 +88,8 @@ io.on('connection', function(socket){
 		//console.log(data);
     clearTimeout(autosaveId);
     autosaveId = setTimeout(function() {
-      save(socket.room, function(){
-        socket.emit('autosave-receive');
+      save(socket.room, function(editorContent){
+        io.to(socket.room).emit('autosave-receive');
       });
     }, 2000);
 		socket.broadcast.to(socket.room).emit('change-receive', data);
@@ -151,7 +151,7 @@ io.on('connection', function(socket){
        fs.writeFileSync(projectPath + '/index.html', editorContent.html);
        fs.writeFileSync(projectPath + '/style.css', editorContent.css);
        fs.writeFileSync(projectPath + '/script.js', editorContent.js);
-       callback()
+       callback(editorContent);
      });
    }
 });
