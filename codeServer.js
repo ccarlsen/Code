@@ -47,6 +47,7 @@ io.on('connection', function(socket){
       socket.socketinfo = {};
       socket.socketinfo.room = room;
       socket.socketinfo.clientid = socket.id;
+      socket.socketinfo.activeTab = 'HTML';
       socket.socketinfo.usernumber = getNextUsernumber(socketlist[room]);
       socketlist[room].push(socket);
       socketinfolist[room].push(socket.socketinfo);
@@ -120,14 +121,22 @@ io.on('connection', function(socket){
 		socket.broadcast.to(socket.room).emit('show-cursor', data);
 	});
 
+  socket.on('switch-tab', function (editor) {
+    var i = socketinfolist[socket.room].indexOf(socket.socketinfo);
+    socket.socketinfo.activeTab = editor;
+    socketinfolist[socket.room][i] = socket.socketinfo
+		io.to(socket.room).emit('switch-tab-receive', socket.socketinfo);
+	});
+
 	socket.on('disconnect', function() {
       console.log('Room: ' + socket.room + ' id: ' + socket.id + 'Got disconnect!');
       if(socket.room != null) {
         var i = socketlist[socket.room].indexOf(socket);
         var j = socketinfolist[socket.room].indexOf(socket.socketinfo);
+        var tempSocketinfo = socket.socketinfo;
         socketlist[socket.room].splice(i, 1);
         socketinfolist[socket.room].splice(j, 1);
-  	    io.to(socket.room).emit('client-left', socket.id);
+  	    io.to(socket.room).emit('client-left', tempSocketinfo);
       }
    });
 });

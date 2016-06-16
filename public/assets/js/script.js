@@ -81,6 +81,7 @@ $(document).ready(function() {
 			} else {
 				$('body').attr('data-user', socketinfo.usernumber);
 			}
+			$('#tabs li[data-editor="'+socketinfo.activeTab+'"] span').append('<i data-user="'+socketinfo.usernumber+'"></i>');
 		});
 	});
 });
@@ -237,11 +238,12 @@ socket.on('client-selection-clear-receive', function(data) {
 	clearSelection(data.editor, clientId);
 });
 
-socket.on('client-joined', function(socketInfo) {
-	var clientid = socketInfo.clientid.replace('/#', '');
-	$('#sectionHTML .CodeMirror-sizer').append('<div data-user="'+socketInfo.usernumber+'" data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
-	$('#sectionCSS .CodeMirror-sizer').append('<div data-user="'+socketInfo.usernumber+'" data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
-	$('#sectionJS .CodeMirror-sizer').append('<div data-user="'+socketInfo.usernumber+'" data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
+socket.on('client-joined', function(socketinfo) {
+	var clientid = socketinfo.clientid.replace('/#', '');
+	$('#sectionHTML .CodeMirror-sizer').append('<div data-user="'+socketinfo.usernumber+'" data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
+	$('#sectionCSS .CodeMirror-sizer').append('<div data-user="'+socketinfo.usernumber+'" data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
+	$('#sectionJS .CodeMirror-sizer').append('<div data-user="'+socketinfo.usernumber+'" data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
+	$('#tabs li[data-editor="'+socketinfo.activeTab+'"] span').append('<i data-user="'+socketinfo.usernumber+'"></i>');
 });
 
 socket.on('change-receive', function(data) {
@@ -276,11 +278,17 @@ socket.on('show-cursor', function(data) {
 	$('#' + getSectionSelectorByType(data.editor) + ' .custom-cursor[data-client='+clientid+']').css('visibility', 'visible');
 });
 
-socket.on('client-left', function(clientId){
-	clientId = clientId.replace('/#', '');
+socket.on('switch-tab-receive', function(socketinfo) {
+	$('#tabs li span i[data-user="'+socketinfo.usernumber+'"]').remove();
+	$('#tabs li[data-editor="'+socketinfo.activeTab+'"] span').append('<i data-user="'+socketinfo.usernumber+'"></i>');
+});
+
+socket.on('client-left', function(socketinfo){
+	clientId = socketinfo.clientid.replace('/#', '');
 	$('#sectionHTML .custom-cursor[data-client='+clientId+']').remove();
 	$('#sectionCSS .custom-cursor[data-client='+clientId+']').remove();
 	$('#sectionJS .custom-cursor[data-client='+clientId+']').remove();
+	$('#tabs li span i[data-user="'+socketinfo.usernumber+'"]').remove();
 	clearSelection('HTML', clientId);
 	clearSelection('CSS', clientId);
 	clearSelection('JS', clientId);
@@ -291,6 +299,7 @@ socket.on('client-left', function(clientId){
 $('#tabs li').on('click', function() {
 	var editor = $(this).data('editor');
 
+	socket.emit('switch-tab', editor);
 	$('#tabs li').removeClass('active');
 	$('#tabs li[data-editor="'+editor+'"]').addClass('active');
 
