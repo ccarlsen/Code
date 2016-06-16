@@ -283,6 +283,10 @@ socket.on('switch-tab-receive', function(socketinfo) {
 	$('#tabs li[data-editor="'+socketinfo.activeTab+'"] span').append('<i data-user="'+socketinfo.usernumber+'"></i>');
 });
 
+socket.on('autosave-receive', function() {
+	$('#resultFrame').attr('src', $('#resultFrame').attr('src'));
+});
+
 socket.on('client-left', function(socketinfo){
 	clientId = socketinfo.clientid.replace('/#', '');
 	$('#sectionHTML .custom-cursor[data-client='+clientId+']').remove();

@@ -7,6 +7,8 @@ var fs = require("fs");
 var socketlist = [];
 var socketinfolist = [];
 var userlimit = 4;
+var autosaveId;
+var rootPath = './public/pen/'
 
 app.use(express.static(__dirname + '/public'));
 
@@ -51,16 +53,12 @@ io.on('connection', function(socket){
       socket.socketinfo.usernumber = getNextUsernumber(socketlist[room]);
       socketlist[room].push(socket);
       socketinfolist[room].push(socket.socketinfo);
-      var projectPath = './public/pen/' + room;
+      var projectPath = rootPath + room;
   		console.log('Clients in Room: ' + room + ' - ' + socketlist[room].length);
   		if(socketlist[room].length > 1) {
-  			var ownersocket = socketlist[room][0];
-  			ownersocket.emit('getValue', function(editorContent) {
-          fs.writeFileSync(projectPath + '/index.html', editorContent.html);
-          fs.writeFileSync(projectPath + '/style.css', editorContent.css);
-          fs.writeFileSync(projectPath + '/script.js', editorContent.js);
-  				callback(editorContent, socketinfolist[room], socket.socketinfo);
-  			});
+          save(room, function(){
+            callback(editorContent, socketinfolist[room], socket.socketinfo);
+          });
   		} else {
         var fileContents = {};
         try {
@@ -88,6 +86,12 @@ io.on('connection', function(socket){
 
 	socket.on('change', function (data) {
 		//console.log(data);
+    clearTimeout(autosaveId);
+    autosaveId = setTimeout(function() {
+      save(socket.room, function(){
+        socket.emit('autosave-receive');
+      });
+    }, 2000);
 		socket.broadcast.to(socket.room).emit('change-receive', data);
 	});
 
@@ -139,6 +143,17 @@ io.on('connection', function(socket){
   	    io.to(socket.room).emit('client-left', tempSocketinfo);
       }
    });
+
+   function save(room, callback){
+     var ownersocket = socketlist[room][0];
+     var projectPath = rootPath + room;
+     ownersocket.emit('getValue', function(editorContent) {
+       fs.writeFileSync(projectPath + '/index.html', editorContent.html);
+       fs.writeFileSync(projectPath + '/style.css', editorContent.css);
+       fs.writeFileSync(projectPath + '/script.js', editorContent.js);
+       callback()
+     });
+   }
 });
 
 function getNextUsernumber (socketlist){
