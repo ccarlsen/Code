@@ -9,6 +9,7 @@ var socketinfolist = [];
 var userlimit = 4;
 var autosaveId;
 var rootPath = './public/pen/'
+var templatePath = './template/'
 
 app.use(express.static(__dirname + '/public'));
 
@@ -62,21 +63,30 @@ io.on('connection', function(socket){
   		} else {
         var fileContents = {};
         try {
+            //Im user 1, get file conents
             fs.statSync(projectPath).isDirectory();
-            fileContents.html = fs.readFileSync(projectPath + '/index.html' ,'utf8');
-            fileContents.css = fs.readFileSync(projectPath + '/style.css' ,'utf8');
-            fileContents.js = fs.readFileSync(projectPath + '/script.js' ,'utf8');
+            fileContents.html = fs.readFileSync(projectPath + '/resource/html.content' ,'utf8');
+            fileContents.css = fs.readFileSync(projectPath + '/full/style.css' ,'utf8');
+            fileContents.js = fs.readFileSync(projectPath + '/full/script.js' ,'utf8');
             callback(fileContents, socketinfolist[room], socket.socketinfo);
         }
         catch (err) {
+          //Make new project
           fs.mkdirSync(projectPath);
-          fs.writeFileSync(projectPath + '/index.html', '<!-- HTML -->');
-          fs.writeFileSync(projectPath + '/style.css', '/* CSS */');
-          fs.writeFileSync(projectPath + '/script.js', '// JavaScript');
-          fileContents.html = fs.readFileSync(projectPath + '/index.html' ,'utf8');
-          fileContents.css = fs.readFileSync(projectPath + '/style.css' ,'utf8');
-          fileContents.js = fs.readFileSync(projectPath + '/script.js' ,'utf8');
-          callback(fileContents, socketinfolist[room], socket.socketinfo);
+          fs.mkdirSync(projectPath + '/full');
+          fs.mkdirSync(projectPath + '/resource');
+          makeFullHtmlContent('<!-- HTML -->', projectPath, false, function(fullHtmlContent){
+            fs.writeFileSync(projectPath + '/full/index.html', fullHtmlContent);
+            fs.writeFileSync(projectPath + '/resource/html.content', '<!-- HTML -->');
+            fs.writeFileSync(projectPath + '/resource/css.links', '');
+            fs.writeFileSync(projectPath + '/resource/js.links', '');
+            fs.writeFileSync(projectPath + '/full/style.css', '/* CSS */');
+            fs.writeFileSync(projectPath + '/full/script.js', '// JavaScript');
+            fileContents.html = fs.readFileSync(projectPath + '/resource/html.content' ,'utf8');
+            fileContents.css = fs.readFileSync(projectPath + '/full/style.css' ,'utf8');
+            fileContents.js = fs.readFileSync(projectPath + '/full/script.js' ,'utf8');
+            callback(fileContents, socketinfolist[room], socket.socketinfo);
+          });
         }
   		}
   		socket.broadcast.to(socket.room).emit('client-joined', socket.socketinfo);
@@ -148,10 +158,13 @@ io.on('connection', function(socket){
      var ownersocket = socketlist[room][0];
      var projectPath = rootPath + room;
      ownersocket.emit('getValue', function(editorContent) {
-       fs.writeFileSync(projectPath + '/index.html', editorContent.html);
-       fs.writeFileSync(projectPath + '/style.css', editorContent.css);
-       fs.writeFileSync(projectPath + '/script.js', editorContent.js);
-       callback(editorContent);
+       fs.writeFileSync(projectPath + '/resource/html.content', editorContent.html);
+       makeFullHtmlContent(editorContent.html, projectPath, true, function(htmlContent){
+         fs.writeFileSync(projectPath + '/full/index.html', htmlContent);
+         fs.writeFileSync(projectPath + '/full/style.css', editorContent.css);
+         fs.writeFileSync(projectPath + '/full/script.js', editorContent.js);
+         callback(editorContent);
+       });
      });
    }
 });
@@ -173,4 +186,18 @@ function getNextUsernumber (socketlist){
     }
   }
   return 1;
+}
+
+function makeFullHtmlContent(body, projectPath, hasLinks, callback){
+  var cssLinks = '';
+  var jsLinks = '';
+  if(hasLinks) {
+    var cssLinks = fs.readFileSync(projectPath + '/resource/css.links' ,'utf8');
+    var jsLinks = fs.readFileSync(projectPath + '/resource/js.links' ,'utf8');
+  }
+  var html = fs.readFileSync(templatePath + 'html.template' ,'utf8');
+  html = html.replace('{{HTML}}', body);
+  html = html.replace('{{CSS}}', cssLinks);
+  html = html.replace('{{JS}}', jsLinks);
+  callback(html);
 }

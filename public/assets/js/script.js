@@ -64,6 +64,7 @@ $(document).ready(function() {
 			return;
 		}
 		setWidthSpace();
+		refreshFrame();
 		editors['HTML'].setValue(data.html);
 		editors['CSS'].setValue(data.css);
 		editors['JS'].setValue(data.js);
@@ -284,7 +285,7 @@ socket.on('switch-tab-receive', function(socketinfo) {
 });
 
 socket.on('autosave-receive', function() {
-	$('#resultFrame').attr('src', $('#resultFrame').attr('src'));
+	refreshFrame();
 });
 
 socket.on('client-left', function(socketinfo){
@@ -356,4 +357,8 @@ function clearSelection(editorTyp, clientId){
 	if(selections[editorTyp] !== undefined && selections[editorTyp][clientId] !== undefined) {
 		selections[editorTyp][clientId].clear();
 	}
+}
+
+function refreshFrame() {
+	$('#resultFrame').attr('src', $('#resultFrame').attr('src'));
 }
