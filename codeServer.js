@@ -4,6 +4,8 @@ var LEX = require('letsencrypt-express').testing();
 var https = require('spdy');
 var http = require('http');
 var fs = require("fs");
+var sass = require('node-sass');
+
 var socketlist = [];
 var socketinfolist = [];
 var userlimit = 4;
@@ -66,7 +68,7 @@ io.on('connection', function(socket){
             //Im user 1, get file conents
             fs.statSync(projectPath).isDirectory();
             fileContents.html = fs.readFileSync(projectPath + '/resource/html.content' ,'utf8');
-            fileContents.css = fs.readFileSync(projectPath + '/full/style.css' ,'utf8');
+            fileContents.css = fs.readFileSync(projectPath + '/resource/style.scss' ,'utf8');
             fileContents.js = fs.readFileSync(projectPath + '/full/script.js' ,'utf8');
             callback(fileContents, socketinfolist[room], socket.socketinfo);
         }
@@ -80,10 +82,11 @@ io.on('connection', function(socket){
             fs.writeFileSync(projectPath + '/resource/html.content', '<!-- HTML -->');
             fs.writeFileSync(projectPath + '/resource/css.links', '');
             fs.writeFileSync(projectPath + '/resource/js.links', '');
-            fs.writeFileSync(projectPath + '/full/style.css', '/* CSS */');
+            fs.writeFileSync(projectPath + '/resource/style.scss', '/* SCSS */');
+            fs.writeFileSync(projectPath + '/full/style.css', '/* Compiled CSS */');
             fs.writeFileSync(projectPath + '/full/script.js', '// JavaScript');
             fileContents.html = fs.readFileSync(projectPath + '/resource/html.content' ,'utf8');
-            fileContents.css = fs.readFileSync(projectPath + '/full/style.css' ,'utf8');
+            fileContents.css = fs.readFileSync(projectPath + '/resource/style.scss' ,'utf8');
             fileContents.js = fs.readFileSync(projectPath + '/full/script.js' ,'utf8');
             callback(fileContents, socketinfolist[room], socket.socketinfo);
           });
@@ -159,11 +162,18 @@ io.on('connection', function(socket){
      var projectPath = rootPath + room;
      ownersocket.emit('getValue', function(editorContent) {
        fs.writeFileSync(projectPath + '/resource/html.content', editorContent.html);
-       makeFullHtmlContent(editorContent.html, projectPath, true, function(htmlContent){
-         fs.writeFileSync(projectPath + '/full/index.html', htmlContent);
-         fs.writeFileSync(projectPath + '/full/style.css', editorContent.css);
-         fs.writeFileSync(projectPath + '/full/script.js', editorContent.js);
-         callback(editorContent);
+       fs.writeFileSync(projectPath + '/resource/style.scss', editorContent.css);
+       fs.writeFileSync(projectPath + '/full/script.js', editorContent.js);
+
+       //Compiled SCSS and then make full/html content
+       sass.render({
+         file: projectPath + '/resource/style.scss',
+        }, function(err, result) {
+          fs.writeFileSync(projectPath + '/full/style.css', result.css);
+          makeFullHtmlContent(editorContent.html, projectPath, true, function(htmlContent){
+            fs.writeFileSync(projectPath + '/full/index.html', htmlContent);
+            callback(editorContent);
+          });
        });
      });
    }
