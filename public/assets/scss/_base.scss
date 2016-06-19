@@ -29,9 +29,30 @@ body {
 }
 
 ::selection {
-	color: white;
-	background: black;
+	color: $dark;
+	background: rgba($dark, 0.2);
 }
+body[data-user="1"] {
+	::selection {
+		background: rgba($blue, 0.2);
+	}
+}
+body[data-user="2"] {
+	::selection {
+		background: rgba($pink, 0.2);
+	}
+}
+body[data-user="3"] {
+	::selection {
+		background: rgba($green, 0.2);
+	}
+}
+body[data-user="4"] {
+	::selection {
+		background: rgba($orange, 0.2);
+	}
+}
+
 
 .gutter {
 	height: 100%;

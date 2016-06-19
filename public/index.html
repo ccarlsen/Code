@@ -10,14 +10,34 @@
 	<link rel="stylesheet" href="assets/css/style.css">
 </head>
 
-<body>
+<body data-darkmode="off">
 
 	<aside>
-		<ul id="tabs">
-			<li data-editor="HTML"><span></span>HTML</li>
-			<li data-editor="CSS"><span></span>CSS</li>
-			<li data-editor="JS"><span></span>JavaScript</li>
-		</ul>
+		<header>
+			<span id="options">
+				<form>
+					<fieldset>
+						<label for="additionalCSS">Additional CSS</label>
+						<textarea id="additionalCSS" placeholder="<link rel='stylesheet' href=''>"></textarea>
+					</fieldset>
+					<fieldset>
+						<label for="additionalJS">Additional JavaScript</label>
+						<textarea id="additionalJS" placeholder="<script src=''></script>"></textarea>
+					</fieldset>
+					<fieldset>
+						<label for="darkMode">Dark Mode
+							<input type="checkbox" id="darkMode">
+							<div></div>
+						</label>
+					</fieldset>
+				</form>
+			</span>
+			<ul id="tabs">
+				<li data-editor="HTML"><span></span>HTML</li>
+				<li data-editor="CSS"><span></span>SCSS</li>
+				<li data-editor="JS"><span></span>JavaScript</li>
+			</ul>
+		</header>
 		<section id="sectionHTML">
 			<textarea id="editorHTML"></textarea>
 		</section>

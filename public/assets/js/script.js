@@ -14,7 +14,7 @@ editors['HTML'] = CodeMirror.fromTextArea(document.getElementById('editorHTML'),
 	autofocus: true
 });
 editors['CSS'] = CodeMirror.fromTextArea(document.getElementById('editorCSS'), {
-	mode: "text/css",
+	mode: "text/x-scss",
 	cursorBlinkRate: 0,
 	lineNumbers: true,
 	lineWrapping: false,
@@ -45,6 +45,10 @@ if (asideWidth == null && mainWidth == null) {
 	asideWidth = parseInt(asideWidth);
 	mainWidth = parseInt(mainWidth);
 }
+var darkMode = localStorage.getItem('darkMode');
+if (darkMode == null) {
+	darkMode = 'off';
+}
 
 
 // FUNCTIONS
@@ -53,6 +57,24 @@ function setWidthSpace() {
 	editors['CSS'].setValue(" ");
 	editors['JS'].setValue(" ");
 	space = $('.CodeMirror-line span')[0].getBoundingClientRect().width;
+}
+function getSectionSelectorByType(typ) {
+	if(typ == 'HTML'){
+		return 'sectionHTML';
+	} else if(typ == 'CSS') {
+		return 'sectionCSS';
+	} else if(typ == 'JS') {
+		return 'sectionJS';
+	}
+	return '';
+}
+function clearSelection(editorTyp, clientId){
+	if(selections[editorTyp] !== undefined && selections[editorTyp][clientId] !== undefined) {
+		selections[editorTyp][clientId].clear();
+	}
+}
+function refreshFrame() {
+	$('#resultFrame').attr('src', $('#resultFrame').attr('src'));
 }
 
 
@@ -73,7 +95,6 @@ $(document).ready(function() {
 		$('#sectionHTML').addClass('active');
 		var mySocketId = mySocketInfo.clientid.replace('/#', '');
 		socketinfolist.forEach(function (socketinfo) {
-			//console.log(socketinfo);
 			var clientid = socketinfo.clientid.replace('/#', '');
 			if(mySocketId != clientid) {
 				$('#sectionHTML .CodeMirror-sizer').append('<div data-user="'+socketinfo.usernumber+'" data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
@@ -318,6 +339,46 @@ $('#tabs li').on('click', function() {
 });
 
 
+// OPTIONS
+$('#options').on('click', function() {
+	$(this).toggleClass('open');
+});
+$('#options, #options form').on('click', function(event) {
+	event.stopPropagation();
+});
+$('body').on('click', function() {
+	$('#options').removeClass('open');
+});
+
+$('#additionalCSS').on('input', function() {
+	alert('#additionalCSS was updated!');
+});
+
+$('#additionalJS').on('input', function() {
+	alert('#additionalJS was updated!');
+});
+
+
+// DARK MDOE
+$('#darkMode').on('change', function() {
+	if ($(this).is(':checked')) {
+		localStorage.setItem('darkMode', 'on');
+		$('body').attr('data-darkmode', 'on');
+	} else {
+		localStorage.setItem('darkMode', 'off');
+		$('body').attr('data-darkmode', 'off');
+	}
+});
+$(document).ready(function() {
+	$('body').attr('data-darkmode', darkMode);
+	if ($('body').attr('data-darkmode') == 'on') {
+		$('#darkMode').prop('checked', true);
+	} else {
+		$('#darkMode').prop('checked', false);
+	}
+});
+
+
 // SPLIT.JS
 Split(['aside', 'main'], {
 	sizes: [asideWidth, mainWidth],
@@ -341,24 +402,3 @@ Split(['aside', 'main'], {
 		localStorage.setItem('mainWidth', main);
 	}
 });
-
-function getSectionSelectorByType(typ) {
-	if(typ == 'HTML'){
-		return 'sectionHTML';
-	} else if(typ == 'CSS') {
-		return 'sectionCSS';
-	} else if(typ == 'JS') {
-		return 'sectionJS';
-	}
-	return '';
-}
-
-function clearSelection(editorTyp, clientId){
-	if(selections[editorTyp] !== undefined && selections[editorTyp][clientId] !== undefined) {
-		selections[editorTyp][clientId].clear();
-	}
-}
-
-function refreshFrame() {
-	$('#resultFrame').attr('src', $('#resultFrame').attr('src'));
-}
