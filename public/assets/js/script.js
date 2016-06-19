@@ -90,6 +90,8 @@ $(document).ready(function() {
 		editors['HTML'].setValue(data.html);
 		editors['CSS'].setValue(data.css);
 		editors['JS'].setValue(data.js);
+		$('#additionalCSS').val(data.csslinks);
+		$('#additionalJS').val(data.jslinks);
 		$('#tabs li[data-editor="HTML"]').addClass('active');
 		$('section').not('#sectionHTML').addClass('inactive');
 		$('#sectionHTML').addClass('active');
@@ -287,6 +289,8 @@ socket.on('getValue', function(callback) {
 	editorContent.html = editors['HTML'].getValue();
 	editorContent.css = editors['CSS'].getValue();
 	editorContent.js = editors['JS'].getValue();
+	editorContent.jslinks = $('#additionalJS').val();
+	editorContent.csslinks = $('#additionalCSS').val();
 	callback(editorContent);
 });
 
@@ -305,8 +309,18 @@ socket.on('switch-tab-receive', function(socketinfo) {
 	$('#tabs li[data-editor="'+socketinfo.activeTab+'"] span').append('<i data-user="'+socketinfo.usernumber+'"></i>');
 });
 
-socket.on('autosave-receive', function() {
+socket.on('autosave-receive', function(editorContent) {
 	refreshFrame();
+	$('#additionalCSS').val(editorContent.csslinks);
+	$('#additionalJS').val(editorContent.jslinks);
+});
+
+socket.on('sass-compile-error', function(sassErrorMessage) {
+	if(sassErrorMessage !== null){
+		console.log(sassErrorMessage);
+	} else {
+		console.log('NO ERROR');
+	}
 });
 
 socket.on('client-left', function(socketinfo){
@@ -350,12 +364,12 @@ $('body').on('click', function() {
 	$('#options').removeClass('open');
 });
 
-$('#additionalCSS').on('input', function() {
-	alert('#additionalCSS was updated!');
+$('#additionalCSS').on('change', function() {
+	socket.emit('update-resource', {value: $('#additionalCSS').val(), mode: 'CSS'})
 });
 
-$('#additionalJS').on('input', function() {
-	alert('#additionalJS was updated!');
+$('#additionalJS').on('change', function() {
+	socket.emit('update-resource', {value: $('#additionalJS').val(), mode: 'JS'})
 });
 
 

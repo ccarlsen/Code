@@ -70,6 +70,8 @@ io.on('connection', function(socket){
             fileContents.html = fs.readFileSync(projectPath + '/resource/html.content' ,'utf8');
             fileContents.css = fs.readFileSync(projectPath + '/resource/style.scss' ,'utf8');
             fileContents.js = fs.readFileSync(projectPath + '/full/script.js' ,'utf8');
+            fileContents.jslinks = fs.readFileSync(projectPath + '/resource/js.links' ,'utf8');
+            fileContents.csslinks = fs.readFileSync(projectPath + '/resource/css.links' ,'utf8');
             callback(fileContents, socketinfolist[room], socket.socketinfo);
         }
         catch (err) {
@@ -85,9 +87,11 @@ io.on('connection', function(socket){
             fs.writeFileSync(projectPath + '/resource/style.scss', '/* SCSS */');
             fs.writeFileSync(projectPath + '/full/style.css', '/* Compiled CSS */');
             fs.writeFileSync(projectPath + '/full/script.js', '// JavaScript');
-            fileContents.html = fs.readFileSync(projectPath + '/resource/html.content' ,'utf8');
-            fileContents.css = fs.readFileSync(projectPath + '/resource/style.scss' ,'utf8');
-            fileContents.js = fs.readFileSync(projectPath + '/full/script.js' ,'utf8');
+            fileContents.html = '<!-- HTML -->';
+            fileContents.css = '/* SCSS */';
+            fileContents.js = '// JavaScript';
+            fileContents.jslinks = '';
+            fileContents.csslinks = '';
             callback(fileContents, socketinfolist[room], socket.socketinfo);
           });
         }
@@ -145,6 +149,18 @@ io.on('connection', function(socket){
 		io.to(socket.room).emit('switch-tab-receive', socket.socketinfo);
 	});
 
+  socket.on('update-resource', function (data) {
+    var projectPath = rootPath + socket.room;
+    if(data.mode == 'CSS'){
+      fs.writeFileSync(projectPath + '/resource/css.links', data.value);
+    } else if(data.mode == 'JS'){
+      fs.writeFileSync(projectPath + '/resource/js.links', data.value);
+    }
+    save(socket.room, function(editorContent){
+      io.to(socket.room).emit('autosave-receive', editorContent);
+    });
+	});
+
 	socket.on('disconnect', function() {
       console.log('Room: ' + socket.room + ' id: ' + socket.id + 'Got disconnect!');
       if(socket.room != null) {
@@ -164,12 +180,19 @@ io.on('connection', function(socket){
        fs.writeFileSync(projectPath + '/resource/html.content', editorContent.html);
        fs.writeFileSync(projectPath + '/resource/style.scss', editorContent.css);
        fs.writeFileSync(projectPath + '/full/script.js', editorContent.js);
+       editorContent.csslinks = fs.readFileSync(projectPath + '/resource/css.links' ,'utf8');
+       editorContent.jslinks = fs.readFileSync(projectPath + '/resource/js.links' ,'utf8');
 
        //Compiled SCSS and then make full/html content
        sass.render({
          file: projectPath + '/resource/style.scss',
         }, function(err, result) {
-          fs.writeFileSync(projectPath + '/full/style.css', result.css);
+          if(!err) {
+            fs.writeFileSync(projectPath + '/full/style.css', result.css);
+            io.to(socket.room).emit('sass-compile-error', null);
+          } else {
+            io.to(socket.room).emit('sass-compile-error', err.message + ' on line: ' + err.line);
+          }
           makeFullHtmlContent(editorContent.html, projectPath, true, function(htmlContent){
             fs.writeFileSync(projectPath + '/full/index.html', htmlContent);
             callback(editorContent);
