@@ -106,7 +106,7 @@ io.on('connection', function(socket){
     clearTimeout(autosaveId);
     autosaveId = setTimeout(function() {
       save(socket.room, function(editorContent){
-        io.to(socket.room).emit('autosave-receive');
+        io.to(socket.room).emit('autosave-receive', editorContent);
       });
     }, 2000);
 		socket.broadcast.to(socket.room).emit('change-receive', data);
