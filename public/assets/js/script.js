@@ -316,10 +316,12 @@ socket.on('autosave-receive', function(editorContent) {
 });
 
 socket.on('sass-compile-error', function(sassErrorMessage) {
-	if(sassErrorMessage !== null){
-		console.log(sassErrorMessage);
+	if(sassErrorMessage !== null) {
+		$('#errorCSS').text(sassErrorMessage);
+		$('#sectionCSS').addClass('error');
 	} else {
-		console.log('NO ERROR');
+		$('#errorCSS').text('');
+		$('#sectionCSS').removeClass('error');
 	}
 });
 

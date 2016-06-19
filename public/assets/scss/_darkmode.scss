@@ -6,17 +6,20 @@ body[data-darkmode="on"] {
 		border-right: 1px solid $dark - 10;
 		header {
 			background: $dark;
-			box-shadow: 0 0 10px rgba(black, 0.6);
+			box-shadow: 0 0 5px rgba(black, 0.6);
 		}
 		#tabs {
 			li {
 				background: $dark + 20;
 				border-right: 1px solid $dark - 10;
 				&:hover {
-					background: $dark;
+					background: $dark + 10;
 				}
 				&.active {
 					background: $dark;
+					&:after {
+						background: $dark;
+					}
 				}
 			}
 		}
@@ -24,12 +27,12 @@ body[data-darkmode="on"] {
 			background: $dark + 20;
 			&:before {
 				background: $dark + 80;
-				box-shadow: 0 -6px 0 0px $dark + 80, 0 6px 0 0px $dark + 80;
+				box-shadow: 0 -5px 0 0px $dark + 80, 0 5px 0 0px $dark + 80;
 			}
 			&:hover, &.open {
 				&:before {
 					background: white;
-					box-shadow: 0 -6px 0 0px white, 0 6px 0 0px white;
+					box-shadow: 0 -5px 0 0px white, 0 5px 0 0px white;
 				}
 			}
 			form {
@@ -39,9 +42,9 @@ body[data-darkmode="on"] {
 					border-color: transparent transparent $dark transparent;
 				}
 				fieldset {
-					border-bottom: 1px solid $dark + 20;
+					border-color: $dark + 20;
 					textarea {
-						border: 1px solid $dark + 20;
+						border-color: $dark + 20;
 					}
 				}
 			}
