@@ -1,0 +1,90 @@
+body[data-darkmode="on"] {
+	color: white;
+
+	aside {
+		background: $dark;
+		border-right: 1px solid $dark - 10;
+		header {
+			background: $dark;
+			box-shadow: 0 0 10px rgba(black, 0.6);
+		}
+		#tabs {
+			li {
+				background: $dark + 20;
+				border-right: 1px solid $dark - 10;
+				&:hover {
+					background: $dark;
+				}
+				&.active {
+					background: $dark;
+				}
+			}
+		}
+		#options {
+			background: $dark + 20;
+			&:before {
+				background: $dark + 80;
+				box-shadow: 0 -6px 0 0px $dark + 80, 0 6px 0 0px $dark + 80;
+			}
+			&:hover, &.open {
+				&:before {
+					background: white;
+					box-shadow: 0 -6px 0 0px white, 0 6px 0 0px white;
+				}
+			}
+			form {
+				background: $dark;
+				box-shadow: 0 0 50px rgba(black, 0.6);
+				&:before {
+					border-color: transparent transparent $dark transparent;
+				}
+				fieldset {
+					border-bottom: 1px solid $dark + 20;
+					textarea {
+						border: 1px solid $dark + 20;
+					}
+				}
+			}
+		}
+	}
+
+	.CodeMirror {
+		color: white;
+	}
+	.CodeMirror-gutters {
+		background: $dark;
+	}
+	.CodeMirror-simplescroll-horizontal div,
+	.CodeMirror-simplescroll-vertical div {
+		background: $dark + 30;
+		box-shadow: 0 0 5px rgba(black, 0.6);
+	}
+	.CodeMirror-simplescroll-horizontal,
+	.CodeMirror-simplescroll-vertical {
+		background: $dark;
+	}
+	.CodeMirror-gutter-filler,
+	.CodeMirror-scrollbar-filler {
+		background: $dark;
+	}
+	div.CodeMirror span.CodeMirror-matchingbracket {
+		&:after {
+			background: white;
+		}
+	}
+	div.CodeMirror span.CodeMirror-matchingtag {
+		&:after {
+			background: white;
+		}
+	}
+
+	.gutter {
+		background: $dark + 30;
+		border-right: 1px solid $dark - 10;
+		&:before {
+			background: $dark + 80;
+			box-shadow: 0 -5px 0 0px $dark + 80, 0 5px 0 0px $dark + 80;
+		}
+	}
+
+}
