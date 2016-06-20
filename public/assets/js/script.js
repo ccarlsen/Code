@@ -13,6 +13,7 @@ editors['HTML'] = CodeMirror.fromTextArea(document.getElementById('editorHTML'),
 	autoCloseTags: true,
 	autofocus: true
 });
+
 editors['CSS'] = CodeMirror.fromTextArea(document.getElementById('editorCSS'), {
 	mode: "text/x-scss",
 	cursorBlinkRate: 0,
@@ -116,18 +117,27 @@ editors['HTML'].setOption('extraKeys', {
 	Tab: function(cm) {
 		var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
 		cm.replaceSelection(spaces);
+	},
+	"Ctrl-Space": function(cm) {
+		CodeMirror.showHint(cm, CodeMirror.hint.html);
 	}
 });
 editors['CSS'].setOption('extraKeys', {
 	Tab: function(cm) {
 		var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
 		cm.replaceSelection(spaces);
+	},
+	"Ctrl-Space": function(cm) {
+		CodeMirror.showHint(cm, CodeMirror.hint.css);
 	}
 });
 editors['JS'].setOption('extraKeys', {
 	Tab: function(cm) {
 		var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
 		cm.replaceSelection(spaces);
+	},
+	"Ctrl-Space": function(cm) {
+		CodeMirror.showHint(cm, CodeMirror.hint.js);
 	}
 });
 
