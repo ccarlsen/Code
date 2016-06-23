@@ -455,6 +455,40 @@ Split(['aside', 'main'], {
 
 
 // CHAT
+function placeCaretAtEnd() {
+	var el = document.getElementById('chatInput');
+	if (typeof window.getSelection != 'undefined' && typeof document.createRange != 'undefined') {
+		var sel = window.getSelection();
+		var range = document.createRange();
+		range.selectNodeContents(el);
+		range.collapse(false);
+		sel.removeAllRanges();
+		sel.addRange(range);
+	} else if (typeof document.body.createTextRange != 'undefined') {
+		var textRange = document.body.createTextRange();
+		textRange.moveToElementText(el);
+		textRange.collapse(false);
+		textRange.select();
+	}
+	el.focus();
+}
+
+function insertEmoji() {
+	var sel = window.getSelection();     
+	var range = sel.getRangeAt(0);          
+	var selectedText = range.toString();
+	var newNode = document.createElement('img');
+	range.deleteContents();
+	newNode.setAttribute('src', 'assets/emoji/screaming.png');
+	newNode.setAttribute('title', '8O');
+	range.insertNode(newNode); 
+	range.setStartAfter(newNode);
+	range.setEndAfter(newNode); 
+	sel.removeAllRanges();
+	sel.addRange(range);
+}
+
+
 $('#chat .chatHeader i').on('click', function() {
 	if($('#chat').hasClass('open')) {
 		$('#chat').removeClass('open');
@@ -462,12 +496,32 @@ $('#chat .chatHeader i').on('click', function() {
 		$('#chat').addClass('open');
 		$('time').timeago();
 		$('#chat .chatMessages').scrollTop($('#chat .chatMessages')[0].scrollHeight);
+		placeCaretAtEnd();
 	}
 });
 
 $('#chatInput').on('input', function() {
-	var el = document.getElementById('chatInput');
-	console.log(el.childNodes);
-	var content = $(this).html().replace(/:D/g, '<img src="assets/emoji/screaming.png" title="8O">');
-	$(this).html(content);
+	var content = $(this).html();
+	var regex = new RegExp(/:D/g);
+	if(content.match(regex)) {
+		insertEmoji();
+		$(this).contents().filter(function() {
+			return this.nodeType === 3;
+		}).each(function() {
+			$(this).replaceWith($(this).text().replace(regex, ''));
+		});
+	}
+});
+
+$('#chatInput').on('keypress', function(event) {
+	var content = $(this).html();
+	if (event.which == 13) {
+		if (!content == '') {
+			$('#chat .chatMessages').append('<div class="chatMessage" data-user="1"><div>'+content+'<time datetime="2016-06-21T20:58:19.289Z"></time></div></div>');
+			$('time').timeago();
+			$('#chat .chatMessages').scrollTop($('#chat .chatMessages')[0].scrollHeight);
+			$(this).html('');
+		}
+		return false;
+	}
 });
