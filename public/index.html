@@ -10,7 +10,7 @@
 	<link rel="stylesheet" href="assets/css/style.css">
 </head>
 
-<body data-darkmode="off">
+<body data-showchat="true" data-darkmode="off">
 
 	<aside>
 		<header>
@@ -28,6 +28,12 @@
 					<fieldset>
 						<label for="additionalJS">Additional JavaScript</label>
 						<textarea id="additionalJS" placeholder="<script src=''></script>"></textarea>
+					</fieldset>
+					<fieldset>
+						<label for="showChat">Show Chat
+							<input type="checkbox" id="showChat">
+							<div></div>
+						</label>
 					</fieldset>
 					<fieldset>
 						<label for="darkMode">Dark Mode
@@ -52,10 +58,38 @@
 
 	<main>
 		<iframe id="resultFrame" src="/pen/test/full/index.html"></iframe>
+		<div id="chat">
+			<div class="chatHeader"><strong>1/4</strong> users here<span>2</span><i></i></div>
+			<div class="chatContent">
+				<div class="chatMessages">
+					<div class="chatMessage" data-user="1">
+						<div>first message <img src="assets/emoji/tongue.png" title=":P"><time datetime="2016-06-21T20:58:19.289Z"></time></div>
+						<div>another message<time datetime="2016-06-21T20:58:19.289Z"></time></div>
+					</div>
+					<div class="chatMessage" data-user="2">
+						<div>another user's message<time datetime="2016-06-21T20:58:19.289Z"></time></div>
+					</div>
+					<div class="chatMessage" data-user="1">
+						<div>a much longer and then alot more text to see how it goes on multiple lines<time datetime="2016-06-21T20:58:19.289Z"></time></div>
+					</div>
+					<div class="chatMessage" data-user="3">
+						<div><img src="assets/emoji/crying.png" title=":'O"><time datetime="2016-06-21T20:58:19.289Z"></time></div>
+					</div>
+					<div class="chatMessage" data-user="1">
+						<div>another long message and then alot more text to see how it goes on multiple lines<time datetime="2016-06-21T20:58:19.289Z"></time></div>
+					</div>
+					<div class="chatMessage" data-user="2">
+						<div>lol <img src="assets/emoji/crying.png" title=":'O"></time></div>
+					</div>
+				</div>
+				<div id="chatInput" contenteditable="true"></div>
+			</div>
+		</div>
 	</main>
 
 	<script src="assets/js/vendor/jquery-1.12.0.min.js"></script>
 	<script src="assets/js/vendor/socket.io-1.4.5.js"></script>
+	<script src="assets/js/vendor/jquery.timeago.js"></script>
 	<script src="assets/js/vendor/codemirror.js"></script>
 	<script src="assets/js/vendor/split.min.js"></script>
 

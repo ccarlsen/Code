@@ -46,6 +46,10 @@ if (asideWidth == null && mainWidth == null) {
 	asideWidth = parseInt(asideWidth);
 	mainWidth = parseInt(mainWidth);
 }
+var showChat = localStorage.getItem('showChat');
+if (showChat == null) {
+	showChat = 'true';
+}
 var darkMode = localStorage.getItem('darkMode');
 if (darkMode == null) {
 	darkMode = 'off';
@@ -385,7 +389,27 @@ $('#additionalJS').on('change', function() {
 });
 
 
-// DARK MDOE
+// SHOW CHAT
+$('#showChat').on('change', function() {
+	if ($(this).is(':checked')) {
+		localStorage.setItem('showChat', 'true');
+		$('body').attr('data-showchat', 'true');
+	} else {
+		localStorage.setItem('showChat', 'false');
+		$('body').attr('data-showchat', 'false');
+	}
+});
+$(document).ready(function() {
+	$('body').attr('data-showchat', showChat);
+	if ($('body').attr('data-showchat') == 'true') {
+		$('#showChat').prop('checked', true);
+	} else {
+		$('#showChat').prop('checked', false);
+	}
+});
+
+
+// DARK MODE
 $('#darkMode').on('change', function() {
 	if ($(this).is(':checked')) {
 		localStorage.setItem('darkMode', 'on');
@@ -427,4 +451,23 @@ Split(['aside', 'main'], {
 		localStorage.setItem('asideWidth', aside);
 		localStorage.setItem('mainWidth', main);
 	}
+});
+
+
+// CHAT
+$('#chat .chatHeader i').on('click', function() {
+	if($('#chat').hasClass('open')) {
+		$('#chat').removeClass('open');
+	} else {
+		$('#chat').addClass('open');
+		$('time').timeago();
+		$('#chat .chatMessages').scrollTop($('#chat .chatMessages')[0].scrollHeight);
+	}
+});
+
+$('#chatInput').on('input', function() {
+	var el = document.getElementById('chatInput');
+	console.log(el.childNodes);
+	var content = $(this).html().replace(/:D/g, '<img src="assets/emoji/screaming.png" title="8O">');
+	$(this).html(content);
 });
