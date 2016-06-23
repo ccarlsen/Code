@@ -130,6 +130,12 @@ main {
 							background: $orange;
 						}
 					}
+					&[data-onlyemoji="true"] {
+						img {
+							width: 32px;
+							height: 32px;
+						}
+					}
 				}
 			}
 			#chatInput {
@@ -157,7 +163,6 @@ main {
 				height: 20px;
 				display: inline-block;
 				vertical-align: middle;
-				transform: translateY(-2px);
 			}
 		}
 		&.open {

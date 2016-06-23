@@ -518,12 +518,19 @@ $('#chatInput').on('input', function() {
 
 $('#chatInput').on('keypress', function(event) {
 	var content = $(this).html();
+	var contents = $(this).contents();
 	var date = new Date();
 	if (event.which == 13) {
 		if (!content == '') {
 			$(this).html('');
 
-			$('#chat .chatMessages').append('<div class="chatMessage" data-user="1"><div>'+content+'<time datetime="' + date.toISOString() + '"></time></div></div>');
+			// If only emoji is sent
+			if(contents[0].tagName == 'IMG') {
+				$('#chat .chatMessages').append('<div class="chatMessage" data-user="1" data-onlyemoji="true"><div>'+content+'<time datetime="' + date.toISOString() + '"></time></div></div>');
+			} else {
+				$('#chat .chatMessages').append('<div class="chatMessage" data-user="1" data-onlyemoji="false"><div>'+content+'<time datetime="' + date.toISOString() + '"></time></div></div>');
+			}
+
 			/* Need logic for appending message from same user, for example...
 			<div class="chatMessage" data-user="1">
 				<div>'+message+'<time datetime=""></time></div>
