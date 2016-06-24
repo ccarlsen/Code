@@ -472,6 +472,10 @@ var emoji = [
 	{ "file": "winking.png", "shortcut": ";)" }
 ];
 
+function escapeRegExp(str) {
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+}
+
 function placeCaretAtEnd() {
 	var el = document.getElementById("chatInput");
 	if (typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
@@ -490,17 +494,17 @@ function placeCaretAtEnd() {
 	el.focus();
 }
 
-function insertEmoji() {
-	var sel = window.getSelection();     
-	var range = sel.getRangeAt(0);          
+function insertEmoji(emoji) {
+	var sel = window.getSelection();
+	var range = sel.getRangeAt(0);
 	var selectedText = range.toString();
 	var newNode = document.createElement('img');
 	range.deleteContents();
-	newNode.setAttribute("src", "assets/emoji/screaming.png");
-	newNode.setAttribute("title", "8'O");
-	range.insertNode(newNode); 
+	newNode.setAttribute("src", "assets/emoji/" + emoji.file);
+	newNode.setAttribute("title", '');
+	range.insertNode(newNode);
 	range.setStartAfter(newNode);
-	range.setEndAfter(newNode); 
+	range.setEndAfter(newNode);
 	sel.removeAllRanges();
 	sel.addRange(range);
 }
@@ -522,14 +526,16 @@ $('#chat .chatHeader i').on('click', function() {
 
 $('#chatInput').on('input', function() {
 	var content = $(this).html();
-	var regex = new RegExp(/:D/g);
-	if(content.match(regex)) {
-		insertEmoji();
-		$(this).contents().filter(function() {
-			return this.nodeType === 3;
-		}).each(function() {
-			$(this).replaceWith($(this).text().replace(regex, ''));
-		});
+	for(var i = 0; i < emoji.length; i++) {
+		var regex = new RegExp(escapeRegExp(emoji[i].shortcut));
+		if(content.match(regex)) {
+			insertEmoji(emoji[i]);
+			$(this).contents().filter(function() {
+				return this.nodeType === 3;
+			}).each(function() {
+				$(this).replaceWith($(this).text().replace(regex, ''));
+			});
+		}
 	}
 });
 
