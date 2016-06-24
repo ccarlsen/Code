@@ -161,6 +161,11 @@ io.on('connection', function(socket){
     });
 	});
 
+  socket.on('send-message', function (data) {
+    data.client  = socket.socketinfo;
+		io.to(socket.room).emit('message-receive', data);
+	});
+
 	socket.on('disconnect', function() {
       console.log('Room: ' + socket.room + ' id: ' + socket.id + 'Got disconnect!');
       if(socket.room != null) {

@@ -540,27 +540,32 @@ $('#chatInput').on('input', function() {
 });
 
 $('#chatInput').on('keypress', function(event) {
-	var content = $(this).html();
-	var contents = $(this).contents();
+	var data = {};
+	data.content = $(this).html();
+	data.tagName =  '';
 	var date = new Date();
 	if (event.which == 13) {
-		if (!content == '') {
+		if (!data.content == '') {
 			$(this).html('');
-
-			if(contents[0].tagName == 'IMG') {
-				$('#chat .chatMessages').append('<div class="chatMessage" data-user="1" data-onlyemoji="true"><div>'+content+'<time datetime="' + date.toISOString() + '"></time></div></div>');
-			} else {
-				$('#chat .chatMessages').append('<div class="chatMessage" data-user="1" data-onlyemoji="false"><div>'+content+'<time datetime="' + date.toISOString() + '"></time></div></div>');
-			}
-
-			/* Need logic for appending message from same user, for example...
-			<div class="chatMessage" data-user="1">
-				<div>'+message+'<time datetime=""></time></div>
-				<div>'+append+'<time datetime=""></time></div>
-			</div> */
-
-			scrollToBottomTimeago();
+			socket.emit('send-message', data);
 		}
 		return false;
 	}
+});
+
+socket.on('message-receive', function(data) {
+	var date = new Date();
+	var lastUsernumber = $('#chat .chatMessage:last-child').data('user');
+
+	//New message
+	if(lastUsernumber !== data.client.usernumber) {
+		if(data.tagName == 'IMG') {
+			$('#chat .chatMessages').append('<div class="chatMessage" data-user="'+data.client.usernumber+'" data-onlyemoji="true"><div>'+data.content+'<time datetime="' + date.toISOString() + '"></time></div></div>');
+		} else {
+			$('#chat .chatMessages').append('<div class="chatMessage" data-user="'+data.client.usernumber+'" data-onlyemoji="false"><div>'+data.content+'<time datetime="' + date.toISOString() + '"></time></div></div>');
+		}
+	} else { //Append message
+		$('#chat .chatMessage:last-child').append('<div>'+data.content+'<time datetime="' + date.toISOString() + '"></time></div>');
+	}
+	scrollToBottomTimeago();
 });
