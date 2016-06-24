@@ -1,6 +1,8 @@
 // VARIABLES
 var socket = io.connect();
 var editors = [];
+var usercount  = 0;
+var userlimit = 4;
 editors['HTML'] = CodeMirror.fromTextArea(document.getElementById('editorHTML'), {
 	mode: "htmlmixed",
 	cursorBlinkRate: 0,
@@ -90,6 +92,7 @@ $(document).ready(function() {
 			alert(data.error);
 			return;
 		}
+		usercount = socketinfolist.length
 		setWidthSpace();
 		refreshFrame();
 		editors['HTML'].setValue(data.html);
@@ -100,6 +103,7 @@ $(document).ready(function() {
 		$('#tabs li[data-editor="HTML"]').addClass('active');
 		$('section').not('#sectionHTML').addClass('inactive');
 		$('#sectionHTML').addClass('active');
+		$('#chat .chatHeader strong').html(usercount + '/' + userlimit);
 		var mySocketId = mySocketInfo.clientid.replace('/#', '');
 		socketinfolist.forEach(function (socketinfo) {
 			var clientid = socketinfo.clientid.replace('/#', '');
@@ -278,6 +282,8 @@ socket.on('client-selection-clear-receive', function(data) {
 
 socket.on('client-joined', function(socketinfo) {
 	var clientid = socketinfo.clientid.replace('/#', '');
+	usercount++;
+	$('#chat .chatHeader strong').html(usercount + '/' + userlimit);
 	$('#sectionHTML .CodeMirror-sizer').append('<div data-user="'+socketinfo.usernumber+'" data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
 	$('#sectionCSS .CodeMirror-sizer').append('<div data-user="'+socketinfo.usernumber+'" data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
 	$('#sectionJS .CodeMirror-sizer').append('<div data-user="'+socketinfo.usernumber+'" data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
@@ -341,6 +347,8 @@ socket.on('sass-compile-error', function(sassErrorMessage) {
 
 socket.on('client-left', function(socketinfo){
 	clientId = socketinfo.clientid.replace('/#', '');
+	usercount--;
+	$('#chat .chatHeader strong').html(usercount + '/' + userlimit);
 	$('#sectionHTML .custom-cursor[data-client='+clientId+']').remove();
 	$('#sectionCSS .custom-cursor[data-client='+clientId+']').remove();
 	$('#sectionJS .custom-cursor[data-client='+clientId+']').remove();
@@ -518,7 +526,9 @@ $('#chat .chatHeader i').on('click', function() {
 	if($('#chat').hasClass('open')) {
 		$('#chat').removeClass('open');
 	} else {
+		unreadMessageCount = 0;
 		$('#chat').addClass('open');
+		$('#chat .chatHeader span').hide();
 		scrollToBottomTimeago();
 		placeCaretAtEnd();
 	}
@@ -553,6 +563,7 @@ $('#chatInput').on('keypress', function(event) {
 	}
 });
 
+var unreadMessageCount = 0;
 socket.on('message-receive', function(data) {
 	var date = new Date();
 	var lastUsernumber = $('#chat .chatMessage:last-child').data('user');
@@ -567,5 +578,12 @@ socket.on('message-receive', function(data) {
 	} else { //Append message
 		$('#chat .chatMessage:last-child').append('<div>'+data.content+'<time datetime="' + date.toISOString() + '"></time></div>');
 	}
+
+	if(!$('#chat').hasClass('open')) {
+		$('#chat .chatHeader span').show();
+		unreadMessageCount++;
+		$('#chat .chatHeader span').text(unreadMessageCount);
+	}
+
 	scrollToBottomTimeago();
 });
