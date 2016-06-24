@@ -87,7 +87,7 @@ function refreshFrame() {
 
 // INITIALIZE
 $(document).ready(function() {
-	socket.emit('join', 'xyz', function(data, socketinfolist, mySocketInfo) {
+	socket.emit('join', room, function(data, socketinfolist, mySocketInfo) {
 		if(mySocketInfo == null){
 			alert(data.error);
 			return;

@@ -10,10 +10,25 @@ var socketlist = [];
 var socketinfolist = [];
 var userlimit = 4;
 var autosaveId;
-var rootPath = './public/pen/'
+var rootPath = './public/project/'
 var templatePath = './template/'
 
 app.use(express.static(__dirname + '/public'));
+app.set('views', __dirname + '/public');
+app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'html');
+
+app.use(function(req, res, next) {
+  if(req.url.substr(-1) == '/' && req.url.length > 1) {
+    res.redirect(301, req.url.slice(0, -1));
+  } else {
+    next();
+  }
+});
+
+app.get('/:room', function(req, res) {
+  res.render("project", { room: req.params.room });
+});
 
 //letsencrypt https config
 var lex = LEX.create({
@@ -36,7 +51,7 @@ server.listen(8888, function () {
 
 io.on('connection', function(socket){
 	socket.on('join', function(room, callback) {
-    room = 'test';
+    console.log('Client joins: ' + room);
     if(socketlist[room] == null){
       socketlist[room] = [];
     }
