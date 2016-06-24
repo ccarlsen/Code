@@ -81,7 +81,7 @@ function clearSelection(editorTyp, clientId){
 	}
 }
 function refreshFrame() {
-	$('#resultFrame').attr('src', $('#resultFrame').attr('src'));
+	$('#resultFrame').attr('src', '/project/'+room+'/full/index.html');
 }
 
 
