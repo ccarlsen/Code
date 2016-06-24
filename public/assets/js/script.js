@@ -455,6 +455,23 @@ Split(['aside', 'main'], {
 
 
 // CHAT
+var emoji = [
+	{ "file": "astonished.png", "shortcut": "XO" },
+	{ "file": "confused.png", "shortcut": ":/" },
+	{ "file": "crying.png", "shortcut": ":'O" },
+	{ "file": "expressionless.png", "shortcut": "-_-" },
+	{ "file": "frowning.png", "shortcut": ":(" },
+	{ "file": "grinning.png", "shortcut": ":D" },
+	{ "file": "neutral.png", "shortcut": ":I" },
+	{ "file": "openmouth.png", "shortcut": ":O" },
+	{ "file": "screaming.png", "shortcut": "8O" },
+	{ "file": "sleeping.png", "shortcut": "zzz" },
+	{ "file": "smiling.png", "shortcut": ":)" },
+	{ "file": "tear.png", "shortcut": ":'(" },
+	{ "file": "tongue.png", "shortcut": ":P" },
+	{ "file": "winking.png", "shortcut": ";)" }
+];
+
 function placeCaretAtEnd() {
 	var el = document.getElementById("chatInput");
 	if (typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
@@ -524,7 +541,6 @@ $('#chatInput').on('keypress', function(event) {
 		if (!content == '') {
 			$(this).html('');
 
-			// If only emoji is sent
 			if(contents[0].tagName == 'IMG') {
 				$('#chat .chatMessages').append('<div class="chatMessage" data-user="1" data-onlyemoji="true"><div>'+content+'<time datetime="' + date.toISOString() + '"></time></div></div>');
 			} else {
