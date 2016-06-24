@@ -567,23 +567,19 @@ var unreadMessageCount = 0;
 socket.on('message-receive', function(data) {
 	var date = new Date();
 	var lastUsernumber = $('#chat .chatMessage:last-child').data('user');
-
-	//New message
 	if(lastUsernumber !== data.client.usernumber) {
 		if(data.tagName == 'IMG') {
 			$('#chat .chatMessages').append('<div class="chatMessage" data-user="'+data.client.usernumber+'" data-onlyemoji="true"><div>'+data.content+'<time datetime="' + date.toISOString() + '"></time></div></div>');
 		} else {
 			$('#chat .chatMessages').append('<div class="chatMessage" data-user="'+data.client.usernumber+'" data-onlyemoji="false"><div>'+data.content+'<time datetime="' + date.toISOString() + '"></time></div></div>');
 		}
-	} else { //Append message
+	} else {
 		$('#chat .chatMessage:last-child').append('<div>'+data.content+'<time datetime="' + date.toISOString() + '"></time></div>');
 	}
-
 	if(!$('#chat').hasClass('open')) {
 		$('#chat .chatHeader span').show();
 		unreadMessageCount++;
 		$('#chat .chatHeader span').text(unreadMessageCount);
 	}
-
 	scrollToBottomTimeago();
 });
