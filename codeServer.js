@@ -179,31 +179,33 @@ io.on('connection', function(socket){
    });
 
    function save(room, callback){
+     if(socketlist[room].length > 0){
      var ownersocket = socketlist[room][0];
      var projectPath = rootPath + room;
-     ownersocket.emit('getValue', function(editorContent) {
-       fs.writeFileSync(projectPath + '/resource/html.content', editorContent.html);
-       fs.writeFileSync(projectPath + '/resource/style.scss', editorContent.css);
-       fs.writeFileSync(projectPath + '/full/script.js', editorContent.js);
-       editorContent.csslinks = fs.readFileSync(projectPath + '/resource/css.links' ,'utf8');
-       editorContent.jslinks = fs.readFileSync(projectPath + '/resource/js.links' ,'utf8');
+       ownersocket.emit('getValue', function(editorContent) {
+         fs.writeFileSync(projectPath + '/resource/html.content', editorContent.html);
+         fs.writeFileSync(projectPath + '/resource/style.scss', editorContent.css);
+         fs.writeFileSync(projectPath + '/full/script.js', editorContent.js);
+         editorContent.csslinks = fs.readFileSync(projectPath + '/resource/css.links' ,'utf8');
+         editorContent.jslinks = fs.readFileSync(projectPath + '/resource/js.links' ,'utf8');
 
-       //Compiled SCSS and then make full/html content
-       sass.render({
-         file: projectPath + '/resource/style.scss',
-        }, function(err, result) {
-          if(!err) {
-            fs.writeFileSync(projectPath + '/full/style.css', result.css);
-            io.to(socket.room).emit('sass-compile-error', null);
-          } else {
-            io.to(socket.room).emit('sass-compile-error', err.message + ' on line: ' + err.line);
-          }
-          makeFullHtmlContent(editorContent.html, projectPath, true, function(htmlContent){
-            fs.writeFileSync(projectPath + '/full/index.html', htmlContent);
-            callback(editorContent);
-          });
+         //Compiled SCSS and then make full/html content
+         sass.render({
+           file: projectPath + '/resource/style.scss',
+          }, function(err, result) {
+            if(!err) {
+              fs.writeFileSync(projectPath + '/full/style.css', result.css);
+              io.to(socket.room).emit('sass-compile-error', null);
+            } else {
+              io.to(socket.room).emit('sass-compile-error', err.message + ' on line: ' + err.line);
+            }
+            makeFullHtmlContent(editorContent.html, projectPath, true, function(htmlContent){
+              fs.writeFileSync(projectPath + '/full/index.html', htmlContent);
+              callback(editorContent);
+            });
+         });
        });
-     });
+     }
    }
 });
 
