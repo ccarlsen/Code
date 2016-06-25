@@ -176,3 +176,48 @@ div.CodeMirror span.cm-bracket.CodeMirror-matchingtag {
 		display: none;
 	}
 }
+
+
+// BASE
+body[data-user="1"] {
+	::selection {
+		background: rgba($blue, 0.2);
+	}
+}
+body[data-user="2"] {
+	::selection {
+		background: rgba($pink, 0.2);
+	}
+}
+body[data-user="3"] {
+	::selection {
+		background: rgba($green, 0.2);
+	}
+}
+body[data-user="4"] {
+	::selection {
+		background: rgba($orange, 0.2);
+	}
+}
+
+
+// GUTTER
+.gutter {
+	height: 100%;
+	background: white;
+	border-right: 1px solid $grey - 20;
+	position: relative;
+	float: left;
+	cursor: ew-resize;
+	&:before {
+		content: "";
+		width: 3px;
+		height: 3px;
+		background: $grey - 20;
+		border-radius: 100%;
+		box-shadow: 0 -5px 0 0px $grey - 20, 0 5px 0 0px $grey - 20;
+		position: absolute;
+		top: 50%; left: 50%;
+		transform: translate(-50%, -50%);
+	}
+}
