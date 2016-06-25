@@ -113,6 +113,7 @@ $(document).ready(function() {
 				$('#sectionJS .CodeMirror-sizer').append('<div data-user="'+socketinfo.usernumber+'" data-client="'+clientid+'" class="custom-cursor" style="top:0px;left:0px;"></div>');
 			} else {
 				$('body').attr('data-user', socketinfo.usernumber);
+				$('#favicon').attr('href', 'assets/favicons/favicon-'+socketinfo.usernumber+'.png');
 			}
 			$('#tabs li[data-editor="'+socketinfo.activeTab+'"] span').append('<i data-user="'+socketinfo.usernumber+'"></i>');
 		});
