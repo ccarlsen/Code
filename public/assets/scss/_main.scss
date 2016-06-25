@@ -4,9 +4,6 @@ main {
 	background: white;
 	position: relative;
 	float: left;
-	@media only screen and (max-width: 500px) {
-		display: none;
-	}
 
 	iframe {
 		width: 100%;

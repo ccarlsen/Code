@@ -39,15 +39,6 @@ var selections = [];
 selections['HTML'] = [];
 selections['CSS'] = [];
 selections['JS'] = [];
-var asideWidth = localStorage.getItem('asideWidth');
-var mainWidth = localStorage.getItem('mainWidth');
-if (asideWidth == null && mainWidth == null) {
-	asideWidth = 50;
-	mainWidth = 50;
-} else {
-	asideWidth = parseInt(asideWidth);
-	mainWidth = parseInt(mainWidth);
-}
 var hideChat = localStorage.getItem('hideChat');
 if (hideChat == null) {
 	hideChat = 'false';
@@ -467,25 +458,12 @@ $(document).ready(function() {
 
 // SPLIT.JS
 Split(['aside', 'main'], {
-	sizes: [asideWidth, mainWidth],
+	sizes: [50, 50],
 	gutterSize: 9,
-	minSize: 500,
 	onDrag: function() {
 		editors['HTML'].setSize('100%', '100%');
 		editors['CSS'].setSize('100%', '100%');
 		editors['JS'].setSize('100%', '100%');
-	},
-	onDragEnd: function() {
-		var regex1 = /(100|[0-9]{1,2})(\.[0-9]{1,8})?/g;
-		var regex2 = /(100|[0-9]{1,2})(\.[0-9]{1,8})?/g;
-		var aside = $('aside').attr('style');
-		var main = $('main').attr('style');
-		aside = regex1.exec(aside);
-		main = regex2.exec(main);
-		aside = Math.round(aside[0]);
-		main = Math.round(main[0]);
-		localStorage.setItem('asideWidth', aside);
-		localStorage.setItem('mainWidth', main);
 	}
 });
 
