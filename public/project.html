@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title><%= room %></title>
+	<title>Puhn | <%= room %></title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="shortcut icon" href="assets/favicons/favicon.png" id="favicon">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
@@ -29,6 +29,13 @@
 					<fieldset>
 						<label for="additionalJS">Additional JavaScript</label>
 						<textarea id="additionalJS" placeholder="<script src=''></script>"></textarea>
+					</fieldset>
+					<fieldset>
+						<label for="privateProject">Private Project
+							<input type="checkbox" id="privateProject">
+							<div></div>
+							<input type="text" id="projectPassword" placeholder="Enter password" required="">
+						</label>
 					</fieldset>
 					<fieldset>
 						<label for="showChat">Show Chat

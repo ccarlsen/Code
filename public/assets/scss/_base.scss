@@ -33,3 +33,11 @@ body {
 	color: $dark;
 	background: rgba($dark, 0.2);
 }
+
+@mixin clearfix {
+	&:after {
+		content: "";
+		display: table;
+		clear: both;
+	}
+}

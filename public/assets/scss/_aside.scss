@@ -96,7 +96,7 @@ aside {
 			}
 		}
 		form {
-			width: 340px;
+			width: 400px;
 			background: white;
 			box-shadow: 0 0 50px rgba(black, 0.1);
 			position: absolute;
@@ -120,8 +120,36 @@ aside {
 			fieldset {
 				padding: 20px;
 				border-bottom: 1px solid $grey - 20;
-				&:last-of-type {
+				position: relative;
+				&:nth-of-type(3) {
+					input[type="text"] {
+						width: calc(100% - 220px);
+						height: 30px;
+						color: inherit;
+						background: transparent;
+						border: 1px solid $grey - 20;
+						outline: none;
+						font-family: inherit;
+						font-size: 11px;
+						padding: 10px;
+						position: absolute;
+						top: 50%; right: 20px;
+						transform: translateY(-50%);
+						display: none;
+					}
+					input[type="checkbox"] {
+						&:checked + div + input {
+							display: block;
+						}
+					}
+				}
+				&:nth-of-type(4), &:nth-of-type(5) {
+					width: 50%;
+					float: left;
 					border-bottom: none;
+				}
+				&:nth-of-type(4) {
+					border-right: 1px solid $grey - 20;
 				}
 				label {
 					display: inline-block;
@@ -129,8 +157,8 @@ aside {
 					-webkit-user-select: none;
 				}
 				textarea {
-					width: 300px;
-					height: 100px;
+					width: 360px;
+					height: 80px;
 					color: inherit;
 					background: transparent;
 					border: 1px solid $grey - 20;

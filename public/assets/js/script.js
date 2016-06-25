@@ -83,6 +83,15 @@ function clearSelection(editorTyp, clientId){
 function refreshFrame() {
 	$('#resultFrame').attr('src', '/project/'+room+'/full/index.html');
 }
+function generatePassword() {
+	var length = 8;
+	var charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	var retVal = "";
+	for (var i = 0, n = charset.length; i < length; ++i) {
+		retVal += charset.charAt(Math.floor(Math.random() * n));
+	}
+	return retVal;
+}
 
 
 // INITIALIZE
@@ -398,6 +407,24 @@ $('#additionalJS').on('change', function() {
 });
 
 
+// PRIVATE PROJECT
+$('#privateProject').on('change', function() {
+	if ($(this).is(':checked')) {
+		$('#projectPassword').val(generatePassword());
+		console.log('Password was created!');
+	}
+});
+$('#projectPassword').on('change', function() {
+	var val = $(this).val();
+	if (val.length == 0) {
+		$('#projectPassword').val(generatePassword());
+		console.log('Password was changed!');
+	} else {
+		console.log('Password was changed!');
+	}
+});
+
+
 // SHOW CHAT
 $('#showChat').on('change', function() {
 	if ($(this).is(':checked')) {
@@ -480,11 +507,9 @@ var emoji = [
 	{ "file": "tongue.png", "shortcut": ":P" },
 	{ "file": "winking.png", "shortcut": ";)" }
 ];
-
 function escapeRegExp(str) {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 }
-
 function placeCaretAtEnd() {
 	var el = document.getElementById("chatInput");
 	if (typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
@@ -502,7 +527,6 @@ function placeCaretAtEnd() {
 	}
 	el.focus();
 }
-
 function insertEmoji(emoji) {
 	var sel = window.getSelection();
 	var range = sel.getRangeAt(0);
@@ -517,12 +541,10 @@ function insertEmoji(emoji) {
 	sel.removeAllRanges();
 	sel.addRange(range);
 }
-
 function scrollToBottomTimeago() {
 	$('time').timeago();
 	$('#chat .chatMessages').scrollTop($('#chat .chatMessages')[0].scrollHeight);
 }
-
 $('#chat .chatHeader i').on('click', function() {
 	if($('#chat').hasClass('open')) {
 		$('#chat').removeClass('open');
@@ -534,7 +556,6 @@ $('#chat .chatHeader i').on('click', function() {
 		placeCaretAtEnd();
 	}
 });
-
 $('#chatInput').on('input', function() {
 	var content = $(this).html();
 	for(var i = 0; i < emoji.length; i++) {
@@ -549,7 +570,6 @@ $('#chatInput').on('input', function() {
 		}
 	}
 });
-
 $('#chatInput').on('keypress', function(event) {
 	var data = {};
 	data.content = $(this).html();
@@ -563,7 +583,6 @@ $('#chatInput').on('keypress', function(event) {
 		return false;
 	}
 });
-
 var unreadMessageCount = 0;
 socket.on('message-receive', function(data) {
 	var date = new Date();
