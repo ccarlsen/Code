@@ -15,10 +15,11 @@ $('#createProject').on('click', function(event) {
 	$(this).html('Wait a sec<img src="assets/emoji/openmouth.png">');
 	$('#index input').attr('disabled', true);
 	$('#joinProject').attr('disabled', true);
+	location.href = "/new";
 });
 $('#index input').on('input', function() {
 	var val = $(this).val();
-	if(val.length == 5) {
+	if(val.length == 11) {
 		$('#joinProject').attr('disabled', false);
 		$('#joinProject').html('Join a project<img src="assets/emoji/tongue.png">');
 	} else {
@@ -29,7 +30,8 @@ $('#index input').on('input', function() {
 });
 $('#joinProject').on('click', function(event) {
 	event.preventDefault();
-	var projectExists = false;
+	location.href = "/" + $('#projectId').val();
+/*	var projectExists = false;
 	$('#index input').focus();
 	if(projectExists) {
 		$(this).attr('disabled', true);
@@ -41,6 +43,7 @@ $('#joinProject').on('click', function(event) {
 		$(this).addClass('error');
 		$(this).html('Wrong code<img src="assets/emoji/screaming.png">');
 	}
+*/
 });
 $('#index small').on('click', function() {
 	if ($(this).hasClass('url')) {
@@ -48,7 +51,7 @@ $('#index small').on('click', function() {
 		$(this).html('How do I find my project code?');
 	} else {
 		$(this).addClass('url');
-		$(this).html('https://puhn.co/<strong>12345</strong>/');
+		$(this).html('https://puhn.co/<strong>XXX-XXX-XXX</strong>/');
 	}
 });
 
@@ -91,4 +94,5 @@ $('#tryAgain').on('click', function(event) {
 // NOTHING
 $('#goBack').on('click', function(event) {
 	event.preventDefault();
+	location.href = '/';
 });

@@ -27,8 +27,44 @@ app.use(function(req, res, next) {
   }
 });
 
+app.get('/new', function(req, res) {
+  var newProjectId = generateRandomProjectName();
+  console.log(newProjectId);
+  mongo.projectExists(newProjectId, function(exists){
+    if(!exists){
+      console.log('creating new project');
+      mongo.createNewProject(newProjectId, function(created){
+        if(created){
+          console.log('created!');
+          res.redirect('/' + newProjectId);
+        } else {
+          res.redirect('/');
+        }
+      });
+    } else {
+      res.redirect('/');
+    }
+  });
+});
+
 app.get('/:room', function(req, res) {
-  res.render("project", { room: req.params.room });
+  var projectId = req.params.room;
+
+  mongo.getProjectByName(projectId, function(project){
+    if(project){
+      if(getUserCountByProjectName(projectId) < userlimit){
+        if(project.status == 1){
+          res.render("project", { room: projectId });
+        } else if(project.status == 0){
+          res.render("private", { room: projectId });
+        }
+      } else {
+        res.render("full");
+      }
+    } else {
+      res.render("nothing");
+    }
+  });
 });
 
 //letsencrypt https config
@@ -256,4 +292,15 @@ function makeFullHtmlContent(body, projectPath, hasLinks, callback){
   html = html.replace('{{CSS}}', cssLinks);
   html = html.replace('{{JS}}', jsLinks);
   callback(html);
+}
+
+function generateRandomProjectName() {
+  return Math.round(100+(Math.random()*(999-100))) + '-' + Math.round(100+(Math.random()*(999-100))) + '-' + Math.round(100+(Math.random()*(999-100)));
+}
+
+function getUserCountByProjectName(projectId) {
+  if(undefined == socketinfolist[projectId]) {
+    return 0;
+  }
+  return socketinfolist[projectId].length;
 }

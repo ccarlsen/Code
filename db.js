@@ -48,6 +48,16 @@ exports.getProjectByName = function (name, callback) {
         });
 }
 
+exports.projectExists = function (name, callback) {
+  mongoProject.count({name: name}, function (err, count){
+      if(count>0){
+          callback(true);
+      } else {
+        callback(false);
+      }
+  }); 
+}
+
 function handleError(error) {
     console.log(error);
 }
