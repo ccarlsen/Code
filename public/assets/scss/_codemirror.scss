@@ -2,7 +2,7 @@
 .CodeMirror {
 	height: 100%;
 	background: transparent;
-	color: $dark;
+	color: $dark + 40;
 	font-family: "Roboto Mono", monospace;
 	font-size: 12px;
 	font-weight: 500;
@@ -84,6 +84,7 @@ body[data-user="4"] {
 .cm-s-default .cm-tag.cm-bracket {color: #39464E;}
 .cm-s-default .cm-tag {color: #2795EE;}
 .cm-s-default .cm-attribute {color: #f18c16;}
+.cm-s-default .cm-atom {color: #3F51B5;}
 
 
 // CUSTOM

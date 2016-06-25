@@ -6,6 +6,9 @@ aside {
 	position: relative;
 	float: left;
 	overflow: hidden;
+	@media only screen and (max-width: 500px) {
+		display: none;
+	}
 	header {
 		width: 100%;
 		height: 50px;
@@ -82,12 +85,6 @@ aside {
 			top: 50%; left: 50%;
 			transform: translate(-50%, -50%);
 		}
-		&:hover, &.open {
-			&:before {
-				background: $dark - 30;
-				box-shadow: 0 -5px 0 0px $dark - 30, 0 5px 0 0px $dark - 30;
-			}
-		}
 		&.open {
 			form {
 				transform: scale(1);
@@ -105,7 +102,7 @@ aside {
 			transform: scale(0);
 			visibility: hidden;
 			opacity: 0;
-			transform-origin: 340px -50px;
+			transform-origin: 400px -50px;
 			transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out, transform 0.2s ease-in-out;
 			&:before {
 				content: "";
@@ -125,12 +122,6 @@ aside {
 					input[type="text"] {
 						width: calc(100% - 220px);
 						height: 30px;
-						color: inherit;
-						background: transparent;
-						border: 1px solid $grey - 20;
-						outline: none;
-						font-family: inherit;
-						font-size: 11px;
 						padding: 10px;
 						position: absolute;
 						top: 50%; right: 20px;
@@ -159,15 +150,9 @@ aside {
 				textarea {
 					width: 360px;
 					height: 80px;
-					color: inherit;
-					background: transparent;
-					border: 1px solid $grey - 20;
-					outline: none;
-					font-family: inherit;
-					font-size: 11px;
+					padding: 10px;
 					display: block;
 					margin-top: 5px;
-					padding: 10px;
 					white-space: pre;
 					resize: none;
 				}
@@ -181,7 +166,6 @@ aside {
 					vertical-align: middle;
 					margin-left: 4px;
 					margin-top: -2px;
-					transition: background 0.2s ease-in-out;
 					&:before {
 						content: "";
 						width: 20px;

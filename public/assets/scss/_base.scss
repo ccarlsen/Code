@@ -1,5 +1,5 @@
 $grey: 		#F3F5F6;
-$dark:		#252525;
+$dark:		#222222;
 $blue: 		#2196F3;
 $pink: 		#E91E63;
 $green: 	#4CAF50;
@@ -32,6 +32,63 @@ body {
 ::selection {
 	color: $dark;
 	background: rgba($dark, 0.2);
+}
+
+input, textarea, button {
+	width: auto;
+	height: 50px;
+	font-family: inherit;
+	font-size: inherit;
+	line-height: 1.0;
+	display: inline-block;
+	vertical-align: top;
+	border: none;
+	outline: none;
+	appearance: none;
+}
+input, textarea {
+	color: inherit;
+	background: $grey;
+	border-radius: 4px;
+	&::-webkit-input-placeholder {
+		color: $grey - 50;
+	}
+	&::-moz-placeholder {
+		color: $grey - 50;
+	}
+	&:-ms-input-placeholder {
+		color: $grey - 50;
+	}
+	&:-moz-placeholder {
+		color: $grey - 50;
+	}
+}
+button {
+	color: white;
+	font-weight: 700;
+	background: $blue;
+	border-radius: 50px;
+	cursor: pointer;
+	&:hover {
+		background: $blue + 20;
+	}
+	&:disabled {
+		background: $grey - 50;
+		cursor: default;
+	}
+	&.error {
+		background: $red;
+		&:hover {
+			background: $red + 20;
+		}
+	}
+	img {
+		width: 20px;
+		height: 20px;
+		display: inline-block;
+		vertical-align: middle;
+		margin-left: 5px;
+	}
 }
 
 @mixin clearfix {

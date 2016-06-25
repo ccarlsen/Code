@@ -48,9 +48,9 @@ if (asideWidth == null && mainWidth == null) {
 	asideWidth = parseInt(asideWidth);
 	mainWidth = parseInt(mainWidth);
 }
-var showChat = localStorage.getItem('showChat');
-if (showChat == null) {
-	showChat = 'true';
+var hideChat = localStorage.getItem('hideChat');
+if (hideChat == null) {
+	hideChat = 'false';
 }
 var darkMode = localStorage.getItem('darkMode');
 if (darkMode == null) {
@@ -425,22 +425,22 @@ $('#projectPassword').on('change', function() {
 });
 
 
-// SHOW CHAT
-$('#showChat').on('change', function() {
+// HIDE CHAT
+$('#hideChat').on('change', function() {
 	if ($(this).is(':checked')) {
-		localStorage.setItem('showChat', 'true');
-		$('body').attr('data-showchat', 'true');
+		localStorage.setItem('hideChat', 'true');
+		$('body').attr('data-hidechat', 'true');
 	} else {
-		localStorage.setItem('showChat', 'false');
-		$('body').attr('data-showchat', 'false');
+		localStorage.setItem('hideChat', 'false');
+		$('body').attr('data-hidechat', 'false');
 	}
 });
 $(document).ready(function() {
-	$('body').attr('data-showchat', showChat);
-	if ($('body').attr('data-showchat') == 'true') {
-		$('#showChat').prop('checked', true);
+	$('body').attr('data-hidechat', hideChat);
+	if ($('body').attr('data-hidechat') == 'true') {
+		$('#hideChat').prop('checked', true);
 	} else {
-		$('#showChat').prop('checked', false);
+		$('#hideChat').prop('checked', false);
 	}
 });
 

@@ -11,7 +11,7 @@
 	<link rel="stylesheet" href="assets/css/style.css">
 </head>
 
-<body data-showchat="true" data-darkmode="off">
+<body data-hidechat="false" data-darkmode="off">
 
 	<aside>
 		<header>
@@ -24,11 +24,11 @@
 				<form>
 					<fieldset>
 						<label for="additionalCSS">Additional CSS</label>
-						<textarea id="additionalCSS" placeholder="<link rel='stylesheet' href=''>"></textarea>
+						<textarea id="additionalCSS" placeholder='<link rel="stylesheet" href="">'></textarea>
 					</fieldset>
 					<fieldset>
 						<label for="additionalJS">Additional JavaScript</label>
-						<textarea id="additionalJS" placeholder="<script src=''></script>"></textarea>
+						<textarea id="additionalJS" placeholder='<script src=""></script>'></textarea>
 					</fieldset>
 					<fieldset>
 						<label for="privateProject">Private Project
@@ -38,8 +38,8 @@
 						</label>
 					</fieldset>
 					<fieldset>
-						<label for="showChat">Show Chat
-							<input type="checkbox" id="showChat">
+						<label for="hideChat">Hide Chat
+							<input type="checkbox" id="hideChat">
 							<div></div>
 						</label>
 					</fieldset>
@@ -67,7 +67,7 @@
 	<main>
 		<iframe id="resultFrame" src=""></iframe>
 		<div id="chat">
-			<div class="chatHeader"><strong>1/4</strong> users here<span style="display: none;">0</span><i></i></div>
+			<div class="chatHeader">Chat <strong>1/4</strong><span>0</span><i></i></div>
 			<div class="chatContent">
 				<div class="chatMessages"></div>
 				<div id="chatInput" contenteditable="true"></div>

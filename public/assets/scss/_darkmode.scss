@@ -1,7 +1,7 @@
 body[data-darkmode="on"] {
-	color: white;
 
 	aside {
+		color: white;
 		background: $dark;
 		border-right: 1px solid $dark - 10;
 		header {
@@ -43,9 +43,24 @@ body[data-darkmode="on"] {
 				}
 				fieldset {
 					border-color: $dark + 20;
-					textarea {
-						border-color: $dark + 20;
+					textarea, input[type="text"] {
+						background: $dark + 20;
+						&::-webkit-input-placeholder {
+							color: $dark + 80;
+						}
+						&::-moz-placeholder {
+							color: $dark + 80;
+						}
+						&:-ms-input-placeholder {
+							color: $dark + 80;
+						}
+						&:-moz-placeholder {
+							color: $dark + 80;
+						}
 					}
+				}
+				div {
+					background: $dark + 20;
 				}
 			}
 		}
@@ -56,6 +71,9 @@ body[data-darkmode="on"] {
 	}
 	.CodeMirror-gutters {
 		background: $dark;
+	}
+	.CodeMirror-linenumber {
+		color: #666666;
 	}
 	.CodeMirror-simplescroll-horizontal div,
 	.CodeMirror-simplescroll-vertical div {
@@ -72,14 +90,19 @@ body[data-darkmode="on"] {
 	}
 	div.CodeMirror span.CodeMirror-matchingbracket {
 		&:after {
-			background: white;
+			background: $dark + 80;
 		}
 	}
 	div.CodeMirror span.CodeMirror-matchingtag {
 		&:after {
-			background: white;
+			background: $dark + 80;
 		}
 	}
+
+	.cm-s-default .cm-comment {color: #666666;}
+	.cm-s-default .cm-meta {color: #FFFFFF;}
+	.cm-s-default .cm-tag.cm-bracket {color: #FFFFFF;}
+	.cm-s-default .cm-atom {color: #5C6BC0;}
 
 	.gutter {
 		background: $dark + 30;
