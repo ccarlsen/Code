@@ -87,3 +87,8 @@ $('#tryAgain').on('click', function(event) {
 	$(this).attr('disabled', true);
 	$(this).html('Wait a sec');
 });
+
+// NOTHING
+$('#goBack').on('click', function(event) {
+	event.preventDefault();
+});

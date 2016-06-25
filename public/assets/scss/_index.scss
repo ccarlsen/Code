@@ -1,4 +1,4 @@
-#index, #private, #full {
+#index, #private, #full, #nothing {
 	width: 500px;
 	text-align: center;
 	position: absolute;
@@ -12,9 +12,8 @@
 	h1 {
 		font-size: 50px;
 		font-weight: 300;
-		letter-spacing: -2px;
 		line-height: 1.0;
-		margin-bottom: 30px;
+		margin-bottom: 15px;
 		img {
 			width: 50px;
 			height: 50px;
@@ -23,6 +22,11 @@
 			margin: 0 5px;
 			transform: translateY(-2px);
 		}
+	}
+	p {
+		font-size: 18px;
+		margin-bottom: 30px;
+		color: $dark + 80;
 	}
 	fieldset {
 		input, button {
@@ -106,5 +110,11 @@
 #full {
 	#tryAgain {
 		width: 120px;
+	}
+}
+
+#nothing {
+	#goBack {
+		width: 140px;
 	}
 }
