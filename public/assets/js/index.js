@@ -3,8 +3,6 @@ $(document).on('ready', function() {
 		$('#index input').focus();
 	} else if ($('#private').length) {
 		$('#private input').focus();
-	} else if ($('#full').length) {
-
 	}
 });
 
@@ -55,7 +53,6 @@ $('#index small').on('click', function() {
 	}
 });
 
-
 // PRIVATE
 $('#private input').on('input', function() {
 	var val = $(this).val();
@@ -89,6 +86,7 @@ $('#tryAgain').on('click', function(event) {
 	event.preventDefault();
 	$(this).attr('disabled', true);
 	$(this).html('Wait a sec');
+	location.href = '';
 });
 
 // NOTHING
