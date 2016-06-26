@@ -114,6 +114,10 @@ $(document).ready(function() {
 			} else {
 				$('body').attr('data-user', socketinfo.usernumber);
 				$('#favicon').attr('href', 'assets/favicons/favicon-'+socketinfo.usernumber+'.png');
+				if(socketinfo.project.status == 0) {
+					$('#privateProject').prop('checked', true);
+					$('#projectPassword').val(socketinfo.project.pwd);
+				}
 			}
 			$('#tabs li[data-editor="'+socketinfo.activeTab+'"] span').append('<i data-user="'+socketinfo.usernumber+'"></i>');
 		});

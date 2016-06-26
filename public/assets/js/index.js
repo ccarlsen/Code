@@ -74,17 +74,21 @@ $('#private input').on('input', function() {
 });
 $('#joinPrivate').on('click', function(event) {
 	event.preventDefault();
-	var correctPassword = false;
 	$('#private input').focus();
-	if (correctPassword) {
-		$(this).attr('disabled', true);
-		$(this).removeClass('error');
-		$(this).html('Wait a sec');
-		$('#private input').attr('disabled', true);
-	} else {
-		$(this).addClass('error');
-		$(this).html('Wrong password');
-	}
+	var pwd = $('#private input').val();
+	$.ajax({
+	   url: "/check/" + room,
+	   type: "post",
+	   data: {room: room, pwd: pwd},
+	   success: function (data) {
+			 	if(data.valid){
+					post('/' + room, {pwd: pwd});
+				} else {
+					$('#joinPrivate').addClass('error');
+					$('#joinPrivate').html('Wrong password');
+				}
+	   }
+	 });
 });
 
 // FULL
@@ -100,3 +104,25 @@ $('#goBack').on('click', function(event) {
 	event.preventDefault();
 	location.href = '/';
 });
+
+function post(path, params, method) {
+    method = method || "post";
+
+    var form = document.createElement("form");
+    form.setAttribute("method", method);
+    form.setAttribute("action", path);
+
+    for(var key in params) {
+        if(params.hasOwnProperty(key)) {
+            var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", key);
+            hiddenField.setAttribute("value", params[key]);
+
+            form.appendChild(hiddenField);
+         }
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+}

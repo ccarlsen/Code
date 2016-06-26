@@ -41,7 +41,6 @@ exports.getProjectByName = function (name, callback) {
     mongoProject.findOne({
         name: name
     })
-        .select('-pwd')
         .exec(function (err, project) {
             if (err) return handleError(err);
             callback(project);
@@ -51,7 +50,17 @@ exports.getProjectByName = function (name, callback) {
 exports.projectExists = function (name, callback) {
   mongoProject.count({name: name}, function (err, count){
       if(count>0){
-          callback(true);
+        callback(true);
+      } else {
+        callback(false);
+      }
+  });
+}
+
+exports.projectValid = function (name, pwd, callback) {
+  mongoProject.count({name: name, pwd: pwd}, function (err, count){
+      if(count>0){
+        callback(true);
       } else {
         callback(false);
       }

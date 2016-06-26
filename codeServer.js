@@ -5,6 +5,7 @@ var https = require('spdy');
 var http = require('http');
 var fs = require("fs");
 var sass = require('node-sass');
+var bodyParser = require('body-parser');
 var mongo = require('./db');
 
 var socketlist = [];
@@ -14,6 +15,10 @@ var autosaveId;
 var rootPath = './public/project/'
 var templatePath = './template/'
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 app.use(express.static(__dirname + '/public'));
 app.set('views', __dirname + '/public');
 app.engine('html', require('ejs').renderFile);
@@ -77,7 +82,37 @@ app.get('/exists/:room', function (req, res) {
       } else {
         res.status(200).send(JSON.stringify({exists: false}));
       }
-	});
+	 });
+});
+
+app.post('/:room', function(req, res) {
+  var pwd = req.body.pwd;
+  var projectId = req.params.room;
+  mongo.projectValid(projectId, pwd, function(valid){
+    if(valid){
+      if(getUserCountByProjectName(projectId) < userlimit){
+          res.render("project", { room: projectId });
+      } else {
+        res.render("full");
+      }
+    } else {
+      res.render("nothing");
+    }
+  });
+});
+
+app.post('/check/:room', function(req, res) {
+  var pwd = req.body.pwd;
+  var projectId = req.params.room;
+  res.header("Content-Type", "application/json");
+	res.header("Access-Control-Allow-Origin", "*");
+  mongo.projectValid(projectId, pwd, function(valid){
+    if(valid){
+      res.status(200).send(JSON.stringify({valid: true}));
+    } else {
+      res.status(200).send(JSON.stringify({valid: false}));
+    }
+  });
 });
 
 //letsencrypt https config
@@ -101,68 +136,76 @@ server.listen(8888, function () {
 
 io.on('connection', function(socket){
 	socket.on('join', function(room, callback) {
-    console.log('Client joins: ' + room);
-    if(socketlist[room] == null){
-      socketlist[room] = [];
-    }
-    if(socketinfolist[room] == null){
-      socketinfolist[room] = [];
-    }
-    if(socketlist[room].length == userlimit){
-      var data = {error: 'This room is full!'}
-      callback(data, null, null);
-    } else {
-  		socket.join(room);
-  		socket.room = room;
-      socket.socketinfo = {};
-      socket.socketinfo.room = room;
-      socket.socketinfo.clientid = socket.id;
-      socket.socketinfo.activeTab = 'HTML';
-      socket.socketinfo.usernumber = getNextUsernumber(socketlist[room]);
-      socketlist[room].push(socket);
-      socketinfolist[room].push(socket.socketinfo);
-      var projectPath = rootPath + room;
-  		console.log('Clients in Room: ' + room + ' - ' + socketlist[room].length);
-  		if(socketlist[room].length > 1) {
-          save(room, function(editorContent){
-            callback(editorContent, socketinfolist[room], socket.socketinfo);
-          });
-  		} else {
-        var fileContents = {};
-        try {
-            //Im user 1, get file conents
-            fs.statSync(projectPath).isDirectory();
-            fileContents.html = fs.readFileSync(projectPath + '/resource/html.content' ,'utf8');
-            fileContents.css = fs.readFileSync(projectPath + '/resource/style.scss' ,'utf8');
-            fileContents.js = fs.readFileSync(projectPath + '/full/script.js' ,'utf8');
-            fileContents.jslinks = fs.readFileSync(projectPath + '/resource/js.links' ,'utf8');
-            fileContents.csslinks = fs.readFileSync(projectPath + '/resource/css.links' ,'utf8');
-            callback(fileContents, socketinfolist[room], socket.socketinfo);
+    mongo.getProjectByName(room, function(project){
+      if(project){
+        console.log('Client joins: ' + room);
+        if(socketlist[room] == null){
+          socketlist[room] = [];
         }
-        catch (err) {
-          //Make new project
-          fs.mkdirSync(projectPath);
-          fs.mkdirSync(projectPath + '/full');
-          fs.mkdirSync(projectPath + '/resource');
-          makeFullHtmlContent('<!-- HTML -->', projectPath, false, function(fullHtmlContent){
-            fs.writeFileSync(projectPath + '/full/index.html', fullHtmlContent);
-            fs.writeFileSync(projectPath + '/resource/html.content', '<!-- HTML -->');
-            fs.writeFileSync(projectPath + '/resource/css.links', '');
-            fs.writeFileSync(projectPath + '/resource/js.links', '');
-            fs.writeFileSync(projectPath + '/resource/style.scss', '/* SCSS */');
-            fs.writeFileSync(projectPath + '/full/style.css', '/* Compiled CSS */');
-            fs.writeFileSync(projectPath + '/full/script.js', '// JavaScript');
-            fileContents.html = '<!-- HTML -->';
-            fileContents.css = '/* SCSS */';
-            fileContents.js = '// JavaScript';
-            fileContents.jslinks = '';
-            fileContents.csslinks = '';
-            callback(fileContents, socketinfolist[room], socket.socketinfo);
-          });
+        if(socketinfolist[room] == null){
+          socketinfolist[room] = [];
         }
-  		}
-  		socket.broadcast.to(socket.room).emit('client-joined', socket.socketinfo);
-    }
+        if(socketlist[room].length == userlimit){
+          var data = {error: 'This room is full!'}
+          callback(data, null, null);
+        } else {
+      		socket.join(room);
+      		socket.room = room;
+          socket.socketinfo = {};
+          socket.socketinfo.room = room;
+          socket.socketinfo.project = project;
+          socket.socketinfo.clientid = socket.id;
+          socket.socketinfo.activeTab = 'HTML';
+          socket.socketinfo.usernumber = getNextUsernumber(socketlist[room]);
+          socketlist[room].push(socket);
+          socketinfolist[room].push(socket.socketinfo);
+          var projectPath = rootPath + room;
+      		console.log('Clients in Room: ' + room + ' - ' + socketlist[room].length);
+      		if(socketlist[room].length > 1) {
+              save(room, function(editorContent){
+                callback(editorContent, socketinfolist[room], socket.socketinfo);
+              });
+      		} else {
+            var fileContents = {};
+            try {
+                //Im user 1, get file conents
+                fs.statSync(projectPath).isDirectory();
+                fileContents.html = fs.readFileSync(projectPath + '/resource/html.content' ,'utf8');
+                fileContents.css = fs.readFileSync(projectPath + '/resource/style.scss' ,'utf8');
+                fileContents.js = fs.readFileSync(projectPath + '/full/script.js' ,'utf8');
+                fileContents.jslinks = fs.readFileSync(projectPath + '/resource/js.links' ,'utf8');
+                fileContents.csslinks = fs.readFileSync(projectPath + '/resource/css.links' ,'utf8');
+                callback(fileContents, socketinfolist[room], socket.socketinfo);
+            }
+            catch (err) {
+              //Make new project
+              fs.mkdirSync(projectPath);
+              fs.mkdirSync(projectPath + '/full');
+              fs.mkdirSync(projectPath + '/resource');
+              makeFullHtmlContent('<!-- HTML -->', projectPath, false, function(fullHtmlContent){
+                fs.writeFileSync(projectPath + '/full/index.html', fullHtmlContent);
+                fs.writeFileSync(projectPath + '/resource/html.content', '<!-- HTML -->');
+                fs.writeFileSync(projectPath + '/resource/css.links', '');
+                fs.writeFileSync(projectPath + '/resource/js.links', '');
+                fs.writeFileSync(projectPath + '/resource/style.scss', '/* SCSS */');
+                fs.writeFileSync(projectPath + '/full/style.css', '/* Compiled CSS */');
+                fs.writeFileSync(projectPath + '/full/script.js', '// JavaScript');
+                fileContents.html = '<!-- HTML -->';
+                fileContents.css = '/* SCSS */';
+                fileContents.js = '// JavaScript';
+                fileContents.jslinks = '';
+                fileContents.csslinks = '';
+                callback(fileContents, socketinfolist[room], socket.socketinfo);
+              });
+            }
+      		}
+      		socket.broadcast.to(socket.room).emit('client-joined', socket.socketinfo);
+        }
+      } else {
+        console.log('ERROR: Project not found..')
+      }
+    });
+
 	});
 
 
