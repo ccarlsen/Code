@@ -5,6 +5,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>Puhn | <%= room %></title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Real-time collaborative code editor. Currently supports HTML, CSS (SCSS) and JavaScript.">
 	<link rel="shortcut icon" href="assets/favicons/favicon.png" id="favicon">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Mono:300,400,500,700">
@@ -23,18 +24,20 @@
 			<span id="options">
 				<form>
 					<fieldset>
-						<label for="additionalCSS">Additional CSS</label>
+						<label for="additionalCSS">Additional CSS<small data-pre="</head>">Will be appended before the closing</small></label>
 						<textarea id="additionalCSS" placeholder='<link rel="stylesheet" href="">'></textarea>
 					</fieldset>
 					<fieldset>
-						<label for="additionalJS">Additional JavaScript</label>
+						<label for="additionalJS">Additional JavaScript<small data-pre="</body>">Will be appended before the closing</small></label>
 						<textarea id="additionalJS" placeholder='<script src=""></script>'></textarea>
 					</fieldset>
 					<fieldset>
-						<label for="privateProject">Private Project
+						<label for="privateProject">Make this project private
 							<input type="checkbox" id="privateProject">
 							<div></div>
-							<input type="text" id="projectPassword" placeholder="Enter password" required="">
+							<label for="projectPassword">Password
+								<input type="text" id="projectPassword" placeholder="Enter password" required="">
+							</label>
 						</label>
 					</fieldset>
 					<fieldset>

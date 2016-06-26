@@ -5,6 +5,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>Puhn</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Real-time collaborative code editor. Currently supports HTML, CSS (SCSS) and JavaScript.">
 	<link rel="shortcut icon" href="assets/favicons/favicon.png" id="favicon">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Mono:300,400,500,700">
@@ -14,12 +15,13 @@
 <body>
 
 	<div id="index">
-		<h1>Puhn</h1>
+		<h1>Puhn<em>Beta</em></h1>
+		<p>Real-time collaborative code editor. Currently supports HTML, CSS (SCSS) and JavaScript.</p>
 		<fieldset>
 			<button id="createProject">Create a project<img src="assets/emoji/grinning.png"></button>
 		</fieldset>
 		<fieldset class="combo">
-			<input id="projectId" type="text" placeholder="Enter code" maxlength="11" required="">
+			<input id="projectId" type="text" placeholder="Enter code" pattern="([0-9]{3}-[0-9]{3}-[0-9]{3})" maxlength="11" required="">
 			<button id="joinProject" disabled="">Join a project<img src="assets/emoji/smiling.png"></button>
 		</fieldset>
 		<small>How do I find my project code?</small>

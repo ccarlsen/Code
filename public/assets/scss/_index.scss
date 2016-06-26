@@ -22,6 +22,14 @@
 			margin: 0 5px;
 			transform: translateY(-2px);
 		}
+		em {
+			font-size: 9px;
+			font-weight: 700;
+			text-transform: uppercase;
+			opacity: 0.3;
+			vertical-align: top;
+			display: inline-block;
+		}
 	}
 	p {
 		font-size: 18px;
@@ -82,8 +90,8 @@
 #index {
 	fieldset {
 		&:nth-of-type(1) {
-			margin-bottom: 20px;
-			padding-bottom: 20px;
+			margin-bottom: 30px;
+			padding-bottom: 30px;
 			border-bottom: 1px solid $grey - 20;
 		}
 	}

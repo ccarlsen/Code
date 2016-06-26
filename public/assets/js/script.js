@@ -74,15 +74,6 @@ function clearSelection(editorTyp, clientId){
 function refreshFrame() {
 	$('#resultFrame').attr('src', '/project/'+room+'/full/index.html');
 }
-function generatePassword() {
-	var length = 8;
-	var charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-	var retVal = "";
-	for (var i = 0, n = charset.length; i < length; ++i) {
-		retVal += charset.charAt(Math.floor(Math.random() * n));
-	}
-	return retVal;
-}
 
 
 // INITIALIZE
@@ -401,18 +392,12 @@ $('#additionalJS').on('change', function() {
 // PRIVATE PROJECT
 $('#privateProject').on('change', function() {
 	if ($(this).is(':checked')) {
-		$('#projectPassword').val(generatePassword());
-		console.log('Password was created!');
+		$('#projectPassword').focus();
 	}
 });
 $('#projectPassword').on('change', function() {
 	var val = $(this).val();
-	if (val.length == 0) {
-		$('#projectPassword').val(generatePassword());
-		console.log('Password was changed!');
-	} else {
-		console.log('Password was changed!');
-	}
+	alert('Password set to: ' + val);
 });
 
 
@@ -536,6 +521,7 @@ $('#chat .chatHeader i').on('click', function() {
 });
 $('#chatInput').on('input', function() {
 	var content = $(this).html();
+	var contents = $(this).contents();
 	for(var i = 0; i < emoji.length; i++) {
 		var regex = new RegExp(escapeRegExp(emoji[i].shortcut));
 		if(content.match(regex)) {
