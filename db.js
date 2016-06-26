@@ -55,7 +55,18 @@ exports.projectExists = function (name, callback) {
       } else {
         callback(false);
       }
-  }); 
+  });
+}
+
+exports.setProjectStatus = function (name, status, pwd, callback) {
+	mongoProject.findOne({ name: name }, function (err, project){
+    project.status = status;
+		project.pwd = pwd;
+		project.save(function (err) {
+			if (err) return handleError(err);
+			callback(true);
+		});
+	});
 }
 
 function handleError(error) {

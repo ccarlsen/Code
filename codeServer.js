@@ -218,6 +218,19 @@ io.on('connection', function(socket){
 		io.to(socket.room).emit('message-receive', data);
 	});
 
+  socket.on('set-private', function (pwd, callback) {
+    console.log('Set private to: ' + pwd)
+    mongo.setProjectStatus(socket.room, 0, pwd, function(saved){
+      socket.broadcast.to(socket.room).emit('set-private-receive', pwd);
+    });
+	});
+
+  socket.on('set-public', function (callback) {
+    mongo.setProjectStatus(socket.room, 1, '', function(saved){
+      socket.broadcast.to(socket.room).emit('set-public-receive');
+    });
+  });
+
 	socket.on('disconnect', function() {
       console.log('Room: ' + socket.room + ' id: ' + socket.id + 'Got disconnect!');
       if(socket.room != null) {

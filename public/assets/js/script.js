@@ -401,18 +401,31 @@ $('#additionalJS').on('change', function() {
 // PRIVATE PROJECT
 $('#privateProject').on('change', function() {
 	if ($(this).is(':checked')) {
-		$('#projectPassword').val(generatePassword());
-		console.log('Password was created!');
+		var pw = generatePassword();
+	  $('#projectPassword').val(pw);
+		socket.emit('set-private', pw);
+	} else {
+		socket.emit('set-public');
 	}
 });
 $('#projectPassword').on('change', function() {
-	var val = $(this).val();
-	if (val.length == 0) {
-		$('#projectPassword').val(generatePassword());
-		console.log('Password was changed!');
-	} else {
-		console.log('Password was changed!');
+	var pw = $(this).val();
+	if (pw.length == 0) {
+		pw = generatePassword();
+	  $('#projectPassword').val(pw);
 	}
+	socket.emit('set-private', pw);
+});
+
+socket.on('set-public-receive', function(){
+	console.log('received public');
+	$('#privateProject').prop('checked', false);
+});
+
+socket.on('set-private-receive', function(pw){
+	console.log('received pw private');
+	$('#privateProject').prop('checked', true);
+	$('#projectPassword').val(pw);
 });
 
 
