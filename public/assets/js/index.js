@@ -17,7 +17,9 @@ $('#createProject').on('click', function(event) {
 });
 $('#index input').on('input', function() {
 	var val = $(this).val();
-	if(val.length == 11) {
+	var regex = new RegExp(/([0-9]{3}-[0-9]{3}-[0-9]{3})/, 'g');
+	var test = regex.test(val);
+	if (val.length == 11 && test) {
 		$('#joinProject').attr('disabled', false);
 		$('#joinProject').html('Join a project<img src="assets/emoji/tongue.png">');
 	} else {
@@ -28,20 +30,19 @@ $('#index input').on('input', function() {
 });
 $('#joinProject').on('click', function(event) {
 	event.preventDefault();
-	location.href = "/" + $('#projectId').val();
-/*	var projectExists = false;
+	var projectExists = false;
 	$('#index input').focus();
-	if(projectExists) {
+	if (projectExists) {
 		$(this).attr('disabled', true);
 		$(this).removeClass('error');
 		$(this).html('Wait a sec<img src="assets/emoji/openmouth.png">');
 		$('#createProject').attr('disabled', true);
 		$('#index input').attr('disabled', true);
+		location.href = "/" + $('#projectId').val();
 	} else {
 		$(this).addClass('error');
 		$(this).html('Wrong code<img src="assets/emoji/screaming.png">');
 	}
-*/
 });
 $('#index small').on('click', function() {
 	if ($(this).hasClass('url')) {
@@ -56,7 +57,7 @@ $('#index small').on('click', function() {
 // PRIVATE
 $('#private input').on('input', function() {
 	var val = $(this).val();
-	if(val.length >= 1) {
+	if (val.length >= 1) {
 		$('#joinPrivate').attr('disabled', false);
 		$('#joinPrivate').html('Join project');
 		$('#joinPrivate').removeClass('error');
@@ -70,7 +71,7 @@ $('#joinPrivate').on('click', function(event) {
 	event.preventDefault();
 	var correctPassword = false;
 	$('#private input').focus();
-	if(correctPassword) {
+	if (correctPassword) {
 		$(this).attr('disabled', true);
 		$(this).removeClass('error');
 		$(this).html('Wait a sec');
