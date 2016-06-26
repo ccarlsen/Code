@@ -67,6 +67,19 @@ app.get('/:room', function(req, res) {
   });
 });
 
+app.get('/exists/:room', function (req, res) {
+  var projectId = req.params.room;
+	res.header("Content-Type", "application/json");
+	res.header("Access-Control-Allow-Origin", "*");
+	  mongo.getProjectByName(projectId, function(project){
+      if(project){
+        res.status(200).send(JSON.stringify({exists: true}));
+      } else {
+        res.status(200).send(JSON.stringify({exists: false}));
+      }
+	});
+});
+
 //letsencrypt https config
 var lex = LEX.create({
   configDir: '/etc/letsencrypt',

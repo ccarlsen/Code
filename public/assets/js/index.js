@@ -30,19 +30,24 @@ $('#index input').on('input', function() {
 });
 $('#joinProject').on('click', function(event) {
 	event.preventDefault();
+	var thisSelector = this;
 	var projectExists = false;
-	$('#index input').focus();
-	if (projectExists) {
-		$(this).attr('disabled', true);
-		$(this).removeClass('error');
-		$(this).html('Wait a sec<img src="assets/emoji/openmouth.png">');
-		$('#createProject').attr('disabled', true);
-		$('#index input').attr('disabled', true);
-		location.href = "/" + $('#projectId').val();
-	} else {
-		$(this).addClass('error');
-		$(this).html('Wrong code<img src="assets/emoji/screaming.png">');
-	}
+	var projectId = $('#projectId').val();
+	$.get( "exists/" + projectId, function( data ) {
+		if(data.exists) {
+			$(thisSelector).attr('disabled', true);
+			$(thisSelector).removeClass('error');
+			$(thisSelector).html('Wait a sec<img src="assets/emoji/openmouth.png">');
+			$('#createProject').attr('disabled', true);
+			$('#index input').attr('disabled', true);
+			location.href = "/" + $('#projectId').val();
+		} else {
+			$(thisSelector).addClass('error');
+			$(thisSelector).html('Wrong code<img src="assets/emoji/screaming.png">');
+		}
+		$('#index input').focus();
+	});
+
 });
 $('#index small').on('click', function() {
 	if ($(this).hasClass('url')) {
