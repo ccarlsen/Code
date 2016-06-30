@@ -115,12 +115,24 @@ app.post('/check/:room', function(req, res) {
   });
 });
 
+app.get('/stats/info', function (req, res) {
+	res.header("Access-Control-Allow-Origin", "*");
+  res.header("Content-Type", "application/json");
+  var respJson = '[{';
+  for (var key in socketinfolist) {
+      respJson += ',"' + key + '":' + JSON.stringify(socketinfolist[key]);
+  }
+  respJson += "}]";
+  respJson = respJson.slice(0, 2) + respJson.slice(3);
+  res.status(200).send(respJson);
+});
+
 //letsencrypt https config
 var lex = LEX.create({
   configDir: '/etc/letsencrypt',
   approveRegistration: function (hostname, cb) {
     cb(null, {
-      domains: ['code.puhn.co']
+      domains: ['puhn.co']
     , email: 'madetho@live.de'
     , agreeTos: true
     });
