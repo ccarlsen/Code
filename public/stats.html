@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Puhn</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Real-time collaborative code editor. Currently supports HTML, CSS (SCSS) and JavaScript.">
+	<link rel="shortcut icon" href="assets/favicons/favicon.png" id="favicon">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Mono:300,400,500,700">
+	<link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+
+
+	<script src="assets/js/vendor/jquery-1.12.0.min.js"></script>
+	<script>
+	$.get( 'https://puhn.co/stats/info', function( data ) {
+	  var html = '<div class="room">';
+	  $.each(data, function(i, item) {
+		$.each(item, function(j, it) {
+		  if(undefined !== it[0]){
+			html += '<div class="project">';
+			html += '<div class="projectId">' + it[0].project.name + '</div>';
+			html += '<div class="status">' + it[0].project.status + '</div>';
+			html += '<div class="password">' + it[0].project.pwd + '</div>';
+			html += '</div>';
+			it.forEach(function(entry) {
+			  html += '<div class="client">';
+			  html += '<div class="clientId">' + entry.clientid + '</div>';
+			  html += '<div class="tab">' + entry.activeTab + '</div>';
+			  html += '<div class="usernumber">' + entry.usernumber + '</div>';
+			  html += '</div>';
+			});
+		  }
+		});
+	  });
+	  html += '</div>';
+	  $('body').append(html);
+	});
+	</script>
+
+</body>
+</html>
