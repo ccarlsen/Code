@@ -1,0 +1,37 @@
+#stats {
+	width: 500px;
+	margin: 30px auto;
+	@media only screen and (max-width: 500px) {
+		width: 100%;
+		padding: 0 30px;
+	}
+	.room {
+		background: white;
+		margin-bottom: 30px;
+		&:last-child {
+			margin-bottom: 0;
+		}
+		.project {
+			width: 100%;
+			display: table;
+			padding: 15px 30px;
+			.projectId, .status, .password {
+				display: table-cell;
+			}
+			.projectId {
+				font-size: 30px;
+				font-weight: 300;
+				line-height: 1.0;
+			}
+		}
+		.client {
+			width: 100%;
+			display: table;
+			border-top: 1px solid $grey - 10;
+			padding: 15px 30px;
+			.clientId, .tab, .usernumber {
+				display: table-cell;
+			}		
+		}
+	}
+}
