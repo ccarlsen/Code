@@ -14,53 +14,18 @@
 
 <body>
 
-	<div id="stats">
-		<div class="room">
-			<div class="project">
-				<div class="projectId">xxx-xxx-xxx</div>
-				<div class="status">private</div>
-				<div class="password">test</div>
-			</div>
-			<div class="client">
-				<div class="clientId">/dwqum93ud</div>
-				<div class="tab">JS</div>
-				<div class="usernumber">1</div>
-			</div>
-			<div class="client">
-				<div class="clientId">/dwqum93ud</div>
-				<div class="tab">JS</div>
-				<div class="usernumber">1</div>
-			</div>
-		</div>
-		<div class="room">
-			<div class="project">
-				<div class="projectId">xxx-xxx-xxx</div>
-				<div class="status">private</div>
-				<div class="password">test</div>
-			</div>
-			<div class="client">
-				<div class="clientId">/dwqum93ud</div>
-				<div class="tab">JS</div>
-				<div class="usernumber">1</div>
-			</div>
-			<div class="client">
-				<div class="clientId">/dwqum93ud</div>
-				<div class="tab">JS</div>
-				<div class="usernumber">1</div>
-			</div>
-		</div>
-	</div>
+	<div id="stats"></div>
 
 	<script src="assets/js/vendor/jquery-1.12.0.min.js"></script>
 	<script>
-	$.get( 'https://puhn.co/stats/info', function( data ) {
+	$.get( '/stats/info', function( data ) {
 	  var html = '<div class="room">';
 	  $.each(data, function(i, item) {
 		$.each(item, function(j, it) {
 		  if(undefined !== it[0]){
 			html += '<div class="project">';
 			html += '<div class="projectId">' + it[0].project.name + '</div>';
-			html += '<div class="status">' + it[0].project.status + '</div>';
+			html += '<div class="status">' + (it[0].project.status == 1 ? 'Public' : 'Private') + '</div>';
 			html += '<div class="password">' + it[0].project.pwd + '</div>';
 			html += '</div>';
 			it.forEach(function(entry) {

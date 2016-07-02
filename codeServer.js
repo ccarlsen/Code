@@ -52,6 +52,10 @@ app.get('/new', function(req, res) {
   });
 });
 
+app.get('/stats', function (req, res) {
+  res.render("stats");
+});
+
 app.get('/:room', function(req, res) {
   var projectId = req.params.room;
 
